@@ -119,6 +119,8 @@ a { color: var(--accent); }
 
 .tagline { color: var(--muted); margin-top: 0; }
 
+.nickname { color: var(--muted); font-weight: 400; }
+
 .interests { font-size: 0.95rem; }
 
 /* ---------- Publications ---------- */

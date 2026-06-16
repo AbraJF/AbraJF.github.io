@@ -11,3 +11,6 @@ __pycache__/
 
 # Local dev servers / logs
 *.log
+
+# Working source folder (CV master lives here; published copy is in assets/files/)
+data/
