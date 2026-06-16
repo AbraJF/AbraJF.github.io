@@ -1,0 +1,194 @@
+/* ============================================================
+   PhD personal website — single stylesheet.
+   Design goals: readable, fast, no dependencies, mobile-first.
+   Colours live in CSS variables below — change them in one place.
+   ============================================================ */
+
+:root {
+  --fg: #1a1a1a;
+  --muted: #666;
+  --bg: #ffffff;
+  --accent: #2b5797;
+  --border: #e2e2e2;
+  --max-width: 760px;
+  --radius: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #e8e8e8;
+    --muted: #9aa0a6;
+    --bg: #14161a;
+    --accent: #7aa2e3;
+    --border: #2a2e35;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--fg);
+  background: var(--bg);
+}
+
+/* ---------- Header / nav ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
+}
+
+.nav {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.nav-brand {
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--fg);
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--muted);
+}
+
+.nav-links a:hover { color: var(--accent); }
+
+/* ---------- Sections ---------- */
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.section {
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.section:last-of-type { border-bottom: none; }
+
+h1 { font-size: 2rem; margin: 0 0 0.25rem; }
+h2 { font-size: 1.4rem; margin: 0 0 1rem; }
+h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; }
+
+a { color: var(--accent); }
+
+.muted { color: var(--muted); font-size: 0.9rem; }
+
+/* ---------- Hero / about ---------- */
+.hero {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
+.hero-text { flex: 1; min-width: 240px; }
+
+.tagline { color: var(--muted); margin-top: 0; }
+
+.interests { font-size: 0.95rem; }
+
+/* ---------- Publications ---------- */
+.pub-list { list-style: none; padding: 0; }
+
+.pub {
+  padding: 0.9rem 0;
+  border-bottom: 1px dashed var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.pub:last-child { border-bottom: none; }
+
+.pub-title { font-weight: 600; }
+.pub-authors { font-size: 0.92rem; }
+.pub-venue { color: var(--muted); font-size: 0.9rem; font-style: italic; }
+.pub-links { font-size: 0.88rem; margin-top: 0.25rem; }
+
+/* ---------- CV / timeline ---------- */
+.timeline { list-style: none; padding: 0; }
+
+.timeline li {
+  display: flex;
+  gap: 1rem;
+  padding: 0.4rem 0;
+}
+
+.timeline .when {
+  flex: 0 0 110px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  border-radius: var(--radius);
+}
+
+.button:hover { opacity: 0.9; }
+
+/* ---------- Consulting ---------- */
+.services { padding-left: 1.2rem; }
+.services li { padding: 0.15rem 0; }
+
+/* ---------- Contact links ---------- */
+.links {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 480px) {
+  .hero { flex-direction: column; align-items: center; text-align: center; }
+  .timeline li { flex-direction: column; gap: 0; }
+  .timeline .when { flex-basis: auto; }
+}
