@@ -22,14 +22,32 @@ Replace the text. Also change the `<title>` and the `<meta>` tags in the
 
 ## 2. Photo
 
-Save a square photo as `assets/img/avatar.jpg`. If you don't add one, the page
-simply hides the image — nothing breaks.
+Save a square photo as `assets/img/bram.jpg` (the `src` in the `<img>` points there).
+If the file is missing the page simply hides the image — nothing breaks.
 
-## 3. Bio and research interests
+## 3. Bio, social icons, and research interests
 
-Edit the two paragraphs and the interests line in the About section.
+- Edit the two bio paragraphs in the About section.
+- The round **social icons** under your name are a `<ul class="social-icons">` list —
+  update each link's `href` (email, GitHub, Scholar, X, LinkedIn) or remove a `<li>`.
+- **Research interests** are chips: one `<li>` per interest inside
+  `<ul class="chips">`. Add or remove `<li>` items.
 
-## 4. Publications
+## 4. News
+
+Each update is one `<li class="news">` block with a date, a category tag, and text.
+Newest first. The tag class sets the colour — choose from `tag-conference`,
+`tag-paper`, `tag-preprint`, `tag-talk`, `tag-award`, `tag-news`.
+
+```html
+<li class="news">
+  <span class="news-date">2026</span>
+  <span class="tag tag-paper">Paper</span>
+  <span class="news-text">Short description, with an optional <a href="URL">link</a>.</span>
+</li>
+```
+
+## 5. Publications
 
 Each paper is one `<li class="pub">` block. Copy an existing one, paste it, edit the
 fields. Put the newest paper first. Remove the `<li>` blocks you don't need.
@@ -43,22 +61,24 @@ fields. Put the newest paper first. Remove the `<li>` blocks you don't need.
 </li>
 ```
 
-## 5. Consulting
+## 6. Consulting
 
 Edit the paragraphs and the bullet list under the **Consulting** section to describe
 what you offer. The "Get in touch" link reuses your email — update it there.
 
-## 6. CV
+## 7. CV
 
 - Edit the **Education** and **Experience** timelines (each entry is one `<li>`).
+- Mark a role full-time or part-time with `<span class="tag tag-full">Full-time</span>`
+  or `<span class="tag tag-part">Part-time</span>`.
 - Drop your CV PDF at `assets/files/cv.pdf` (or change the link's `href`).
 
-## 7. Contact links
+## 8. Contact links
 
 In the Contact section, replace every `href` with your real links. Delete any line
 for a service you don't use.
 
-## 8. Colours
+## 9. Colours
 
 Want different colours? Open `assets/css/style.css` and change the values at the very
 top under `:root`. Dark mode is automatic and follows the visitor's system setting.

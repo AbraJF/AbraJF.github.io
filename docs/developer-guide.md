@@ -19,7 +19,7 @@ phd-website/
 ├── .nojekyll               # Tells GitHub Pages: serve files as-is, no Jekyll
 ├── assets/
 │   ├── css/style.css        # All styling; design tokens in :root
-│   ├── img/avatar.jpg       # Portrait (user-supplied; optional)
+│   ├── img/bram.jpg         # Portrait (user-supplied; optional)
 │   └── files/cv.pdf         # CV PDF (user-supplied)
 ├── docs/
 │   ├── user-guide.md        # Non-technical editing guide
@@ -32,10 +32,18 @@ phd-website/
 ## HTML conventions
 
 - One `<section>` per content area, each with a stable `id` used by the nav anchors:
-  `#about`, `#publications`, `#consulting`, `#cv`, `#contact`.
+  `#about`, `#news`, `#publications`, `#consulting`, `#cv`, `#contact`.
+- The About hero is split into `.hero-top` (avatar + `.hero-head` with name, taglines,
+  and the `.social-icons` row) followed by full-width bio paragraphs and the
+  `.interests` block (`.chips`), so the bio aligns to the page's left edge rather than
+  to a narrow column beside the photo.
+- Inline SVG icons in `.social-icons` — no icon-font/CDN dependency.
+- Category tags use one class per kind: `.tag-full` / `.tag-part` (CV roles) and
+  `.tag-conference` / `.tag-paper` / `.tag-preprint` / `.tag-talk` / `.tag-award` /
+  `.tag-news` (News entries). Colours are defined in `style.css`.
 - Editable content is annotated with `<!-- EDIT: ... -->` comments. Keep these when
   refactoring so the user guide stays accurate.
-- The avatar `<img>` has an inline `onerror` handler that hides it when the file is
+- The portrait `<img>` has an inline `onerror` handler that hides it when the file is
   missing — so the page never shows a broken image icon.
 
 ## CSS conventions
@@ -63,7 +71,7 @@ phd-website/
 3. Each nav anchor (`href="#..."`) points to an element that exists.
 4. Local resource links (`href`/`src` that aren't `http`, `mailto:`, or `#...`)
    resolve to a file on disk — **except** known user-supplied placeholders
-   (`avatar.jpg`, `cv.pdf`) which are allowed to be absent.
+   (`bram.jpg`, `cv.pdf`) which are allowed to be absent.
 
 Run:
 

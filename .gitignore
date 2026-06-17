@@ -14,3 +14,13 @@ __pycache__/
 
 # Working source folder (CV master lives here; published copy is in assets/files/)
 data/
+
+# Node tooling used only for local screenshot/verification
+node_modules/
+package.json
+package-lock.json
+verify_screenshot.js
+*.png
+
+# Throwaway theme-exploration scaffolding (not part of the published site)
+examples/

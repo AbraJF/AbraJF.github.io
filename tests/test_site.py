@@ -22,10 +22,10 @@ ROOT = Path(__file__).resolve().parent.parent
 INDEX = ROOT / "index.html"
 
 # Sections that must exist (see developer-guide.md "Adding a new section").
-REQUIRED_SECTIONS = ["about", "publications", "consulting", "cv", "contact"]
+REQUIRED_SECTIONS = ["about", "news", "publications", "consulting", "cv", "contact"]
 
 # User-supplied files allowed to be absent in the repo.
-ALLOWED_MISSING = {"assets/img/avatar.jpg", "assets/files/cv.pdf"}
+ALLOWED_MISSING = {"assets/img/bram.jpg", "assets/files/cv.pdf"}
 
 
 class SiteParser(HTMLParser):

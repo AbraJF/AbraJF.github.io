@@ -6,11 +6,12 @@ part-time AI & Innovation consultant/engineer. Plain HTML + CSS, deployed on
 
 ## Sections
 
-- **About / Bio** — short intro, photo, research interests, consulting one-liner.
+- **About / Bio** — short intro, photo, social-icon row, research-interest chips, consulting one-liner.
+- **News** — dated updates with category tags (Conference, Paper, Preprint, Talk, Award, News).
 - **Publications** — papers and preprints, newest first.
 - **Consulting** — part-time AI & Innovation consulting offer.
-- **CV** — education, experience, downloadable PDF.
-- **Contact** — email, GitHub, Google Scholar, ORCID, LinkedIn.
+- **CV** — education and experience (full-time / part-time tags), downloadable PDF.
+- **Contact** — email, GitHub, Google Scholar, X, LinkedIn.
 
 ## Quick start
 
@@ -36,8 +37,8 @@ Replace placeholders (`Your Name`, `[University]`, links, etc.).
 
 ## Assets to add
 
-- `assets/img/avatar.jpg` — your portrait (square works best). Hidden automatically if missing.
-- `assets/files/cv.pdf` — your CV PDF.
+- `assets/img/bram.jpg` — portrait (square works best). The `<img>` hides itself if the file is missing.
+- `assets/files/cv.pdf` — CV PDF.
 
 ## Docs
 
