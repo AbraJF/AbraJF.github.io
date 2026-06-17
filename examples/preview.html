@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Theme preview — Bram Fresen site</title>
+  <style>
+    body { margin: 0; font-family: -apple-system, "Segoe UI", Roboto, sans-serif; }
+    .bar {
+      position: sticky; top: 0; z-index: 5;
+      display: flex; gap: .5rem; align-items: center; flex-wrap: wrap;
+      padding: .6rem 1rem; background: #111; color: #fff;
+    }
+    .bar strong { margin-right: .5rem; font-size: .9rem; }
+    .bar button {
+      font: inherit; font-size: .85rem; cursor: pointer;
+      padding: .4rem .9rem; border-radius: 6px;
+      border: 1px solid #444; background: #1d1d1d; color: #ddd;
+    }
+    .bar button.active { background: #fff; color: #111; border-color: #fff; }
+    iframe { width: 100%; height: calc(100vh - 50px); border: 0; display: block; background: #fff; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <strong>Theme:</strong>
+    <button data-theme="editorial-sage" class="active">Editorial-Sage (new)</button>
+    <button data-theme="sage">Sage</button>
+    <button data-theme="original">Original (current)</button>
+    <button data-theme="editorial">Editorial</button>
+    <button data-theme="terminal">Terminal</button>
+    <button data-theme="neuro">Bold neuro</button>
+  </div>
+  <iframe id="site" src="/index.html"></iframe>
+
+  <script>
+    const frame = document.getElementById('site');
+    const buttons = [...document.querySelectorAll('.bar button')];
+
+    function applyTheme(theme) {
+      const doc = frame.contentDocument;
+      if (!doc) return;
+      // Remove any previously injected theme.
+      doc.querySelectorAll('link[data-theme-css]').forEach(l => l.remove());
+      // Re-enable / disable the site's own stylesheet.
+      doc.querySelectorAll('link[rel="stylesheet"]:not([data-theme-css])')
+         .forEach(l => l.disabled = (theme !== 'original'));
+      if (theme !== 'original') {
+        const link = doc.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/examples/theme-' + theme + '.css';
+        link.setAttribute('data-theme-css', '');
+        doc.head.appendChild(link);
+      }
+    }
+
+    buttons.forEach(btn => btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyTheme(btn.dataset.theme);
+    }));
+
+    // Re-apply current selection whenever the iframe (re)loads.
+    frame.addEventListener('load', () => {
+      const active = document.querySelector('.bar button.active');
+      applyTheme(active ? active.dataset.theme : 'original');
+    });
+  </script>
+</body>
+</html>

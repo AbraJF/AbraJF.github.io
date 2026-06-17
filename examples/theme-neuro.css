@@ -1,0 +1,64 @@
+/* THEME: Bold neuro / modern — big geometric sans, indigo→violet gradient. */
+:root{
+  --fg:#1a1730; --muted:#6b6790; --bg:#ffffff; --card:#f7f6ff;
+  --accent:#4f46e5; --accent2:#9333ea; --border:#e6e3f5; --max-width:840px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);line-height:1.65;
+  font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;}
+.site-header{position:sticky;top:0;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:10}
+.nav{max-width:var(--max-width);margin:0 auto;padding:.9rem 1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+.nav-brand{font-weight:800;font-size:1.1rem;letter-spacing:-.02em;text-decoration:none;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.nav-links{list-style:none;display:flex;gap:1.2rem;margin:0;padding:0;font-size:.9rem;font-weight:600}
+.nav-links a{text-decoration:none;color:var(--muted)}
+.nav-links a:hover{color:var(--accent)}
+main{max-width:var(--max-width);margin:0 auto;padding:0 1rem}
+/* Hero gets a faint node-graph gradient wash */
+#about{position:relative;padding-top:3.5rem}
+#about::before{content:"";position:absolute;inset:-1px 0 auto 0;height:280px;z-index:-1;
+  background:radial-gradient(600px 240px at 18% 20%,rgba(79,70,229,.12),transparent 60%),
+             radial-gradient(500px 220px at 80% 10%,rgba(147,51,234,.12),transparent 60%)}
+.section{padding:3.2rem 0;border-bottom:1px solid var(--border)}
+.section:last-of-type{border-bottom:none}
+h1{font-size:3rem;line-height:1.05;margin:0 0 .4rem;font-weight:800;letter-spacing:-.03em}
+.nickname{font-weight:500;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1.7rem;font-weight:800;letter-spacing:-.02em;margin:0 0 1.5rem;display:inline-block;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+h3{font-size:1.15rem;font-weight:700;margin:1.6rem 0 .5rem}
+a{color:var(--accent);font-weight:500}
+.hero-top{display:flex;gap:1.8rem;align-items:center;flex-wrap:wrap;margin-bottom:1.3rem}
+.hero-head{flex:1;min-width:240px}
+.avatar{width:150px;height:150px;border-radius:24px;object-fit:cover;
+  box-shadow:0 12px 30px rgba(79,70,229,.28);border:3px solid #fff}
+.tagline{color:var(--muted);font-size:1rem;font-weight:500;margin:.2rem 0}
+.social-icons{list-style:none;padding:0;margin:.8rem 0 0;display:flex;gap:.6rem}
+.social-icons a{display:inline-flex;width:38px;height:38px;align-items:center;justify-content:center;border-radius:12px;color:var(--accent);background:var(--card)}
+.social-icons a:hover{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.social-icons svg{width:18px;height:18px;fill:currentColor}
+.interests{margin-top:1.5rem}
+.interests-label{display:block;font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.6rem}
+.chips{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.55rem}
+.chips li{font-size:.85rem;font-weight:600;padding:.35rem .85rem;border-radius:999px;color:#fff;
+  background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.news-list,.pub-list,.timeline,.links,.services{list-style:none;padding:0}
+.news{display:grid;grid-template-columns:64px 116px 1fr;gap:.8rem;align-items:baseline;padding:.6rem 0;border-bottom:1px solid var(--border)}
+.news-date{color:var(--muted);font-weight:600}
+.tag{display:inline-block;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:.16rem .55rem;border-radius:999px}
+.tag-full,.tag-conference{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.tag-paper{background:#16a34a;color:#fff}.tag-preprint{background:#9333ea;color:#fff}
+.tag-talk{background:#ea580c;color:#fff}.tag-award{background:#ca8a04;color:#fff}
+.tag-part,.tag-news{background:var(--card);color:var(--accent)}
+.pub{padding:1rem 0;border-bottom:1px solid var(--border)}
+.pub-title{font-weight:700;font-size:1.1rem;display:block}
+.pub-venue{color:var(--muted);display:block}
+.pub-links{font-size:.86rem}
+.timeline li{display:flex;gap:1rem;padding:.5rem 0}
+.timeline .when{flex:0 0 110px;color:var(--accent);font-weight:600;font-size:.92rem}
+.button{display:inline-block;padding:.6rem 1.3rem;color:#fff;text-decoration:none;border-radius:12px;font-weight:600;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 8px 20px rgba(79,70,229,.3)}
+.links{display:flex;flex-wrap:wrap;gap:.7rem 1.5rem}
+.site-footer{max-width:var(--max-width);margin:0 auto;padding:2rem 1rem 3rem;color:var(--muted);font-size:.85rem}
+@media(max-width:480px){h1{font-size:2.3rem}.hero-top{flex-direction:column;text-align:center}.news{grid-template-columns:1fr;gap:.2rem}}

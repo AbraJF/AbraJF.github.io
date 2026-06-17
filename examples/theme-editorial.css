@@ -1,0 +1,54 @@
+/* THEME: Editorial / academic — serif display, warm paper, oxblood accent. */
+:root{
+  --fg:#23201c; --muted:#7a7066; --bg:#f6f1e7; --card:#fffdf8;
+  --accent:#8a2b2b; --border:#e3d9c6; --max-width:780px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);line-height:1.7;
+  font-family:Georgia,"Iowan Old Style","Times New Roman",serif;}
+.site-header{position:sticky;top:0;background:rgba(246,241,231,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--border);z-index:10}
+.nav{max-width:var(--max-width);margin:0 auto;padding:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+.nav-brand{font-weight:700;font-size:1.15rem;letter-spacing:.01em;text-decoration:none;color:var(--fg)}
+.nav-links{list-style:none;display:flex;gap:1.3rem;margin:0;padding:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;font-size:.86rem;text-transform:uppercase;letter-spacing:.08em}
+.nav-links a{text-decoration:none;color:var(--muted)}
+.nav-links a:hover{color:var(--accent)}
+main{max-width:var(--max-width);margin:0 auto;padding:0 1rem}
+.section{padding:3.5rem 0;border-bottom:1px solid var(--border)}
+.section:last-of-type{border-bottom:none}
+h1{font-size:2.7rem;line-height:1.1;margin:0 0 .4rem;letter-spacing:-.01em}
+.nickname{color:var(--accent);font-style:italic;font-weight:400}
+h2{font-family:-apple-system,Segoe UI,Roboto,sans-serif;font-size:.95rem;text-transform:uppercase;letter-spacing:.16em;color:var(--accent);margin:0 0 1.6rem}
+h3{font-size:1.25rem;margin:1.6rem 0 .5rem}
+a{color:var(--accent)}
+p{font-size:1.08rem}
+.hero-top{display:flex;gap:1.8rem;align-items:center;flex-wrap:wrap;margin-bottom:1.4rem}
+.hero-head{flex:1;min-width:240px}
+.avatar{width:150px;height:150px;border-radius:50%;object-fit:cover;border:4px solid var(--card);box-shadow:0 4px 18px rgba(0,0,0,.12)}
+.tagline{font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:var(--muted);font-size:.98rem;margin:.2rem 0}
+.social-icons{list-style:none;padding:0;margin:.7rem 0 0;display:flex;gap:.7rem}
+.social-icons a{display:inline-flex;width:36px;height:36px;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:50%;color:var(--muted);background:var(--card)}
+.social-icons a:hover{color:#fff;background:var(--accent);border-color:var(--accent)}
+.social-icons svg{width:18px;height:18px;fill:currentColor}
+.interests{margin-top:1.5rem}
+.interests-label{font-family:-apple-system,Segoe UI,Roboto,sans-serif;display:block;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.6rem}
+.chips{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.5rem;font-family:-apple-system,Segoe UI,Roboto,sans-serif}
+.chips li{font-size:.86rem;padding:.3rem .8rem;border:1px solid var(--accent);border-radius:2px;color:var(--accent)}
+.news-list,.pub-list,.timeline,.links,.services{list-style:none;padding:0}
+.news{display:grid;grid-template-columns:70px 110px 1fr;gap:.8rem;align-items:baseline;padding:.6rem 0;border-bottom:1px solid var(--border)}
+.news-date{color:var(--muted);font-style:italic}
+.tag{font-family:-apple-system,Segoe UI,Roboto,sans-serif;display:inline-block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.12rem .5rem;border-radius:2px}
+.tag-full,.tag-conference{background:var(--accent);color:#fff}
+.tag-paper{background:#5b6e3b;color:#fff}.tag-preprint{background:#6a4ca5;color:#fff}
+.tag-talk{background:#b5651d;color:#fff}.tag-award{background:#9a7b1f;color:#fff}
+.tag-part,.tag-news{background:var(--border);color:var(--fg)}
+.pub{padding:1rem 0;border-bottom:1px solid var(--border)}
+.pub-title{font-weight:700;font-size:1.12rem;display:block}
+.pub-venue{color:var(--muted);font-style:italic;display:block}
+.pub-links{font-family:-apple-system,Segoe UI,Roboto,sans-serif;font-size:.86rem}
+.timeline li{display:flex;gap:1rem;padding:.5rem 0}
+.timeline .when{flex:0 0 110px;color:var(--muted);font-style:italic;font-size:.95rem}
+.button{font-family:-apple-system,Segoe UI,Roboto,sans-serif;display:inline-block;padding:.55rem 1.1rem;background:var(--accent);color:#fff;text-decoration:none;border-radius:2px}
+.links{display:flex;flex-wrap:wrap;gap:.7rem 1.5rem}
+.site-footer{max-width:var(--max-width);margin:0 auto;padding:2rem 1rem 3rem;color:var(--muted);font-size:.85rem;font-style:italic}
+@media(max-width:480px){.hero-top{flex-direction:column;text-align:center}.news{grid-template-columns:1fr;gap:.2rem}}

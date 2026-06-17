@@ -22,5 +22,7 @@ node_modules/
 verify_screenshot.js
 *.png
 
-# Throwaway theme-exploration scaffolding (not part of the published site)
-examples/
+# Theme exploration. The CSS candidates + preview tooling ARE tracked (design
+# history); rendered screenshots (*.png, above) and the generated preview page
+# stay local.
+examples/preview-light.html
