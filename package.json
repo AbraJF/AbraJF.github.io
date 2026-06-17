@@ -1,0 +1,33 @@
+{
+  "name": "phd-website",
+  "version": "1.0.0",
+  "description": "A fast, dependency-free personal academic website for a PhD researcher who is also a part-time AI & Innovation consultant/engineer. Plain HTML + CSS, deployed on [GitHub Pages](https://pages.github.com/). No build step, no frameworks.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node --test tests/test_lib.mjs && python tests/test_site.py",
+    "test:js": "node --test tests/test_lib.mjs",
+    "test:site": "python tests/test_site.py",
+    "build:cv": "node scripts/build-cv.js",
+    "mcp": "node mcp/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AbraJF/AbraJF.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AbraJF/AbraJF.github.io/issues"
+  },
+  "homepage": "https://github.com/AbraJF/AbraJF.github.io#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "puppeteer": "^25.1.0"
+  }
+}

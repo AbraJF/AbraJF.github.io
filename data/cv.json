@@ -1,0 +1,89 @@
+{
+  "name": "Abraham Jacob (Bram) Fresen",
+  "title": "PhD Researcher · NeuroAI",
+  "tagline": "Predictive computation in language — language models, brain data, interpretability.",
+  "contact": {
+    "email": "bram.fresen@mpi.nl",
+    "location": "Nijmegen, The Netherlands",
+    "links": [
+      { "label": "Google Scholar", "href": "https://scholar.google.com/citations?user=SGLEgJEAAAAJ&hl=en" },
+      { "label": "GitHub", "href": "https://github.com/AbraJF" },
+      { "label": "LinkedIn", "href": "https://www.linkedin.com/in/bram-fresen-7b0a69151" }
+    ]
+  },
+  "interests": [
+    "NeuroAI",
+    "Predictive computation",
+    "Model–brain alignment",
+    "Interpretability & probing",
+    "Mechanistic interpretability",
+    "Change interpretability",
+    "Computational linguistics"
+  ],
+  "sections": [
+    {
+      "title": "Education",
+      "items": [
+        {
+          "when": "2022 – 2025",
+          "what": "Research MSc Brain & Cognitive Sciences (Cum Laude)",
+          "where": "University of Amsterdam"
+        },
+        {
+          "when": "2017 – 2022",
+          "what": "BSc Cognition, Language and Communication, minor Artificial Intelligence",
+          "where": "University of Amsterdam"
+        }
+      ]
+    },
+    {
+      "title": "Experience",
+      "items": [
+        {
+          "when": "2025 – present",
+          "what": "PhD Researcher — Language and Predictive Computation Group, MPI for Psycholinguistics, Nijmegen. Supervised by Dr. Micha Heilbron.",
+          "where": ""
+        },
+        {
+          "when": "2026 – present",
+          "what": "Consultant, Data & AI specialist — ClickValue (part-time)",
+          "where": ""
+        },
+        {
+          "when": "2024 – 2026",
+          "what": "Consultant, Data & AI specialist — ClickValue (full-time)",
+          "where": ""
+        },
+        {
+          "when": "2024 – 2025",
+          "what": "Research Intern, NeuroAI & interpretability — Amsterdam Brain & Cognition (ABC), University of Amsterdam. Causal probing of LLM representations against fMRI and concept erasure (LEACE); supervised by Dr. Micha Heilbron.",
+          "where": ""
+        },
+        {
+          "when": "2023 – 2024",
+          "what": "Research Intern, model–brain alignment — Institute for Logic, Language and Computation (ILLC), University of Amsterdam. LLM–fMRI alignment and dependency probing (DepProbe); supervised by Dr. Jelle Zuidema & Marianne de Heer Kloots.",
+          "where": ""
+        },
+        {
+          "when": "2018 – 2024",
+          "what": "Teaching Assistant (statistics, cognition, research methods) — University of Amsterdam",
+          "where": ""
+        },
+        {
+          "when": "2022",
+          "what": "Research Intern, psycholinguistics (EEG) — University of Amsterdam. Supervised by Dr. Monique Flecken.",
+          "where": ""
+        }
+      ]
+    }
+  ],
+  "publications": [
+    {
+      "title": "Language models that accurately represent syntactic structure exhibit higher representational similarity to brain activity",
+      "authors": "Fresen, A. J., Choenni, R., Heilbron, M., Zuidema, W., & de Heer Kloots, M.",
+      "venue": "Proceedings of the 46th Annual Meeting of the Cognitive Science Society (CogSci)",
+      "year": "2024",
+      "url": "https://escholarship.org/content/qt1fp7m6nf/qt1fp7m6nf_noSplash_424c2fbd823c92f7fe1c3d0c9dec13a2.pdf"
+    }
+  ]
+}

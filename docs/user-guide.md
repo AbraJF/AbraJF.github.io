@@ -68,10 +68,30 @@ what you offer. The "Get in touch" link reuses your email — update it there.
 
 ## 7. CV
 
-- Edit the **Education** and **Experience** timelines (each entry is one `<li>`).
-- Mark a role full-time or part-time with `<span class="tag tag-full">Full-time</span>`
-  or `<span class="tag tag-part">Part-time</span>`.
-- Drop your CV PDF at `assets/files/cv.pdf` (or change the link's `href`).
+The CV on the page is the **Education**/**Experience** timelines (each entry one `<li>`);
+mark roles with `<span class="tag tag-full">Full-time</span>` / `tag-part`.
+
+The **downloadable PDF** is *generated* — don't edit `cv.pdf` directly. Instead edit
+`data/cv.json` (plain text: name, sections, items, publications) and run:
+
+```bash
+npm run build:cv
+```
+
+This rebuilds `assets/files/cv.pdf` from your edits.
+
+## 7b. Updating via Claude (MCP)
+
+If you use Claude Code in this repo, you can just *ask* — a built-in helper
+("phd-website" MCP server) does the editing for you:
+
+- "Add a news item: 2026, Talk, gave an invited talk at X" → updates the News section.
+- "Add this publication …" → adds it to the page **and** the CV PDF.
+- "Import my publications from Google Scholar" → best-effort pull (may need a retry if
+  Scholar rate-limits; otherwise add the paper manually).
+- "Add a CV experience entry …" → updates `cv.json` and rebuilds the PDF.
+
+Always preview and commit afterward (see below).
 
 ## 8. Contact links
 

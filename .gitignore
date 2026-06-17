@@ -12,13 +12,13 @@ __pycache__/
 # Local dev servers / logs
 *.log
 
-# Working source folder (CV master lives here; published copy is in assets/files/)
-data/
+# Working data folder, except the tracked CV source of truth.
+data/*
+!data/cv.json
 
-# Node tooling used only for local screenshot/verification
+# Node tooling. package.json/lock are tracked (CV build + MCP server depend on them);
+# node_modules and one-off screenshot scripts stay local.
 node_modules/
-package.json
-package-lock.json
 verify_screenshot.js
 *.png
 

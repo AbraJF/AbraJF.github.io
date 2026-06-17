@@ -38,7 +38,31 @@ Replace placeholders (`Your Name`, `[University]`, links, etc.).
 ## Assets to add
 
 - `assets/img/bram.jpg` — portrait (square works best). The `<img>` hides itself if the file is missing.
-- `assets/files/cv.pdf` — CV PDF.
+- `assets/files/cv.pdf` — **generated** from `data/cv.json` (see below), not hand-placed.
+
+## CV (generated PDF)
+
+The CV PDF is built from a single source of truth, `data/cv.json`:
+
+```bash
+npm install        # one-time (puppeteer + MCP SDK)
+npm run build:cv   # data/cv.json → assets/files/cv.pdf
+```
+
+Edit `data/cv.json`, rerun `build:cv`. Layout lives in `lib/cv.js`.
+
+## Content automation (MCP)
+
+A project-level [MCP](https://modelcontextprotocol.io) server (`mcp/server.js`,
+registered in `.mcp.json`) lets an MCP client push updates without hand-editing markup:
+
+- `add_news` — add a dated News entry to `index.html`.
+- `add_publication` — add a paper to the site **and** CV, rebuild the PDF.
+- `import_scholar` — best-effort import from a Google Scholar profile.
+- `add_cv_item` — add an Education/Experience entry to the CV, rebuild the PDF.
+
+See the [developer guide](docs/developer-guide.md#content-automation-cv--mcp) for
+details and the Google Scholar reliability caveat.
 
 ## Docs
 
@@ -48,11 +72,15 @@ Replace placeholders (`Your Name`, `[University]`, links, etc.).
 ## Tests
 
 ```bash
-python tests/test_site.py
+npm test               # node:test unit tests + python site validation
+# or individually:
+npm run test:js        # node --test tests/  (lib/ pure functions)
+npm run test:site      # python tests/test_site.py
 ```
 
-Validates HTML structure, required sections, and that local asset links resolve.
-See the developer guide for details.
+`test:js` covers the CV/news/publication/Scholar libraries; `test:site` validates HTML
+structure, required sections, and that local asset links resolve. See the developer
+guide for details.
 
 ## License
 

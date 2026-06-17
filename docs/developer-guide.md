@@ -20,12 +20,18 @@ phd-website/
 ├── assets/
 │   ├── css/style.css        # All styling; design tokens in :root
 │   ├── img/bram.jpg         # Portrait (user-supplied; optional)
-│   └── files/cv.pdf         # CV PDF (user-supplied)
+│   └── files/cv.pdf         # CV PDF — GENERATED from data/cv.json
+├── data/cv.json             # CV single source of truth
+├── lib/                     # Pure logic (cv, cv-edit, site-edit, scholar)
+├── scripts/build-cv.js      # cv.json → cv.pdf (puppeteer)
+├── mcp/server.js            # MCP content-update server
+├── .mcp.json                # Registers the MCP server for Claude Code
 ├── docs/
 │   ├── user-guide.md        # Non-technical editing guide
 │   └── developer-guide.md   # This file
 ├── tests/
-│   └── test_site.py         # Structure + link validation (stdlib only)
+│   ├── test_site.py         # Structure + link validation (Python stdlib)
+│   └── test_lib.mjs         # Unit tests for lib/ (node:test)
 └── README.md
 ```
 
@@ -86,6 +92,75 @@ policy, run this after every change.
 
 Add new check functions returning a list of error strings, and append their results in
 `main()`. Keep the stdlib-only constraint so the suite runs anywhere without `pip`.
+
+## Content automation (CV + MCP)
+
+The static site has **no build step for the pages themselves** — `index.html` is still
+served as-is. Two pieces of optional tooling sit *beside* it to make recurring updates
+painless. They are dev-time tools; their output (the edited `index.html`, the rebuilt
+`cv.pdf`) is what gets committed and served.
+
+### Layout
+
+```
+data/cv.json            # CV single source of truth
+lib/
+├── cv.js               # renderCvHtml(cv) → printable HTML  (pure)
+├── cv-edit.js          # addCvItem / addCvPublication        (pure)
+├── site-edit.js        # insertNews / insertPublication      (pure, edits index.html string)
+└── scholar.js          # parseScholarProfile (pure) + fetchScholarProfile (network)
+scripts/build-cv.js     # cv.json → puppeteer → assets/files/cv.pdf
+mcp/server.js           # MCP server exposing the tools below
+.mcp.json               # registers the server for Claude Code
+tests/test_lib.mjs      # node:test unit tests for every pure function
+```
+
+All logic lives in `lib/` as **pure functions** (no I/O), so it is unit-tested directly
+in `tests/test_lib.mjs`. `scripts/` and `mcp/` are thin I/O shells around them.
+
+### CV → PDF
+
+`data/cv.json` is the only place CV facts live. Edit it, then:
+
+```bash
+npm run build:cv      # node scripts/build-cv.js → assets/files/cv.pdf
+```
+
+Layout/print CSS is in `lib/cv.js` (`PRINT_CSS`, A4). To restyle the PDF, edit that
+constant — never edit the PDF directly.
+
+### MCP server
+
+`mcp/server.js` is a project-level [MCP](https://modelcontextprotocol.io) server,
+registered in `.mcp.json` so Claude Code loads it automatically in this repo. Tools:
+
+| Tool | Effect |
+|------|--------|
+| `add_news` | Prepend a `<li class="news">` to the News list in `index.html`. |
+| `add_publication` | Add to `index.html` **and** `cv.json`, then rebuild `cv.pdf`. |
+| `import_scholar` | Best-effort pull from a Google Scholar profile → site + CV → rebuild. |
+| `add_cv_item` | Add an Education/Experience entry to `cv.json`, then rebuild `cv.pdf`. |
+
+Run standalone for debugging: `npm run mcp` (speaks MCP over stdio).
+
+**Publication de-duplication** (`isSamePublication` in `lib/cv-edit.js`) is hardened
+against title drift so re-running `import_scholar` is idempotent. Two publications are
+treated as the same work when **any** of these hold, in order:
+
+1. same stable URL key — Google Scholar `citation_for_view` id, or a DOI;
+2. identical normalised titles (case/punctuation/diacritics ignored);
+3. token-overlap (Jaccard) ≥ 0.85.
+
+Genuinely divergent retitles (e.g. a preprint title vs a substantially reworded
+published title) fall below the threshold and are **not** auto-merged — by design.
+Treat Google Scholar as ground truth and correct the canonical entry rather than
+relying on fuzzy matching to reconcile two very different titles.
+
+**Google Scholar caveat:** Scholar has no public API and rate-limits / CAPTCHAs
+automated requests. `parseScholarProfile` is pure and reliable given HTML; the network
+`fetchScholarProfile` is best-effort. If `import_scholar` fails, fall back to
+`add_publication`. For a robust pipeline, swap the fetch for a keyed service
+(e.g. SerpAPI) — the parser/insertion logic stays the same.
 
 ## Deployment internals
 
