@@ -38,7 +38,8 @@ phd-website/
 ## HTML conventions
 
 - One `<section>` per content area, each with a stable `id` used by the nav anchors:
-  `#about`, `#news`, `#publications`, `#consulting`, `#cv`, `#contact`.
+  `#about`, `#news`, `#publications`, `#consulting`, `#cv`. (Contact links live in the
+  About hero social-icon row, not a separate section.)
 - The About hero is split into `.hero-top` (avatar + `.hero-head` with name, taglines,
   and the `.social-icons` row) followed by full-width bio paragraphs and the
   `.interests` block (`.chips`), so the bio aligns to the page's left edge rather than
@@ -54,10 +55,17 @@ phd-website/
 
 ## CSS conventions
 
-- All design tokens (colours, max width, radius) are CSS custom properties under
-  `:root` in `style.css`. Change the theme in one place.
-- Dark mode via `@media (prefers-color-scheme: dark)` — overrides only the tokens.
-- Mobile-first; a single `@media (max-width: 480px)` block handles small screens.
+- Editorial-sage theme: serif display (`--serif`) for headings/body, sans-serif
+  (`--sans`) for nav, tags, labels and metadata.
+- All design tokens (palette, max width, surfaces, on-accent text, shadows) are CSS
+  custom properties under `:root` in `style.css`. Change the theme in one place.
+- Dark mode via `@media (prefers-color-scheme: dark)` — overrides **only** the `:root`
+  tokens; every rule below references variables, so no rule is duplicated per mode.
+- End-of-section dividers are a pseudo-element diamond (`◆`) on a fading hairline
+  (`.section:not(:last-of-type)::before/::after`); the last section omits it.
+- Mobile-first. Two breakpoints: `@media (max-width: 480px)` for hero/news stacking,
+  and `@media (max-width: 560px)` which turns the nav into a horizontally scrollable
+  row (styled scrollbar + CSS scroll-shadow edge fade for iOS).
 - BEM-ish flat class names (`.pub`, `.pub-title`, `.nav-links`). No nesting tools.
 
 ## Adding a new section

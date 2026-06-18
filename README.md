@@ -4,14 +4,17 @@ A fast, dependency-free personal academic website for a PhD researcher who is al
 part-time AI & Innovation consultant/engineer. Plain HTML + CSS, deployed on
 [GitHub Pages](https://pages.github.com/). No build step, no frameworks.
 
+The look is an **editorial-sage** theme: serif display headings over sans-serif accents,
+a green/amber/orange/brown palette, diamond section dividers. Light by default, with a
+dark variant that activates automatically via `prefers-color-scheme`.
+
 ## Sections
 
-- **About / Bio** — short intro, photo, social-icon row, research-interest chips, consulting one-liner.
+- **About / Bio** — short intro, photo, social-icon row (email, GitHub, Google Scholar, X, LinkedIn), research-interest chips, consulting one-liner.
 - **News** — dated updates with category tags (Conference, Paper, Preprint, Talk, Award, News).
 - **Publications** — papers and preprints, newest first.
 - **Consulting** — part-time AI & Innovation consulting offer.
 - **CV** — education and experience (full-time / part-time tags), downloadable PDF.
-- **Contact** — email, GitHub, Google Scholar, X, LinkedIn.
 
 ## Quick start
 

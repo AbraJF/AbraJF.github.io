@@ -93,15 +93,19 @@ If you use Claude Code in this repo, you can just *ask* — a built-in helper
 
 Always preview and commit afterward (see below).
 
-## 8. Contact links
+## 8. Contact / social links
 
-In the Contact section, replace every `href` with your real links. Delete any line
-for a service you don't use.
+Your contact links live in the **social-icon row** under your name in the About hero
+(email, GitHub, Google Scholar, X, LinkedIn) — there is no separate Contact section.
+Replace every `href` with your real links, and delete any icon for a service you
+don't use.
 
 ## 9. Colours
 
 Want different colours? Open `assets/css/style.css` and change the values at the very
-top under `:root`. Dark mode is automatic and follows the visitor's system setting.
+top under `:root`. The site uses an editorial-sage palette (green / amber / orange /
+brown). Dark mode is automatic and follows the visitor's system setting — adjust the
+`@media (prefers-color-scheme: dark)` block just below `:root` to tune the dark variant.
 
 ## Preview before publishing
 

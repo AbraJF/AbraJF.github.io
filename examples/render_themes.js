@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const puppeteer = require('puppeteer');
 
-const themes = ['editorial-sage', 'editorial-sage-light'];
+const themes = ['editorial-sage', 'editorial-sage-light', 'editorial-sage-dark'];
 
 (async () => {
   const browser = await puppeteer.launch({ headless: 'new' });

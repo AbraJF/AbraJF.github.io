@@ -26,3 +26,4 @@ verify_screenshot.js
 # history); rendered screenshots (*.png, above) and the generated preview page
 # stay local.
 examples/preview-light.html
+examples/preview-toggle.html
