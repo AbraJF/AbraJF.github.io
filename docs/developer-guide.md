@@ -100,14 +100,40 @@ the bottom of `index.html`; styles in the "Motion & flair" block of `style.css`.
 - **Scroll reveals** — an `IntersectionObserver` adds `.is-visible` to tagged blocks.
   The hidden start state lives behind a `.js-reveal` class added to `<html>` only when
   JS runs **and** motion is allowed, so no-JS / reduced-motion users see content as-is.
-- **Animated dependency parse** (`buildDepParse()`) — the `.depparse` element carries
-  `data-arcs='[[head,dep,"Label"],…]'` and optional `data-root="<index>"` over its
-  `.w` word spans. JS measures word centres, builds an SVG overlay (curved arc paths,
-  arrowheads, label boxes), then plays a **sequential** draw via the Web Animations API
-  (one step per arc, ROOT first). Re-measures on resize and after `document.fonts.ready`.
-  Without JS only the plain sentence shows; under reduced motion the parse is painted to
-  its final state with no animation. (Note: CSS-transition draw-in was rejected — freshly
-  created SVG nodes have no committed start value to interpolate from; WAAPI avoids that.)
+- **Animated research arc** (the `.research-arc` IIFE) — a self-playing, multi-beat
+  narrative of the PhD's through-line. It sits in **normal page flow** (no scroll
+  hijack): the engine adds `.js-arc` to `<html>`, plays the sequence once when the band
+  scrolls into view, and exposes playback controls. The real bio is a separate, always-in-DOM
+  `<p class="about-bio">` below the band (not the captions), so no-JS / reduced-motion /
+  crawlers always get the full text. Full spec + beat script: `docs/research-arc-animation-plan.md`.
+  Build is **phased** — beats 1–5 are live; the legacy four-beat dep-parse engine (arcs, ROOT,
+  scissors, WAAPI) is parked in git commit `6c9a5ca` to be ported back in at the syntax beat.
+
+  Structure (inside `.arc-stage`, which is `aria-hidden`):
+  - `.arc-figure` > `.arc-row` — the glyph row: `.arc-col-lm` and `.arc-col-brain`
+    (each a `currentColor` inline-SVG `.arc-glyph` + `.arc-glyph-label` + an RDM
+    `.arc-pattern`), with `.arc-rel` (the `≈`/`similar`, and a `?`) centred between them.
+  - `.arc-pattern` — a 4×4 representational-dissimilarity matrix of `.arc-cell` cells.
+    Value classes `v0`–`v3` set warm/red intensity (diagonal = `v3`, same stimulus); the
+    brain's differing off-diagonal cells carry `.d` (a green ring) for "similar, not identical".
+    Cells are real markup so they survive no-JS; JS only staggers their reveal.
+  - `.arc-concepts` — the concept chips (`.arc-concept`, Semantics/Syntax/Pragmatics) that
+    fan in at the concepts beat; `.arc-magnifier` is the badge on the LM glyph.
+  - `.arc-beats` — one `<p class="arc-beat" data-beat="N">` per beat; JS crossfades one at a
+    time (`.is-active`). Beat 2's prediction streams token-by-token: `.arc-tok` spans inside
+    `.arc-pred`, with a blinking `.arc-caret`.
+  - `.arc-controls` — a progress **dot** per beat (jump target) + a **Replay** button.
+
+  The engine maps a beat index to two attributes on `.arc-stage`: cumulative
+  `data-seen="1 2 …"` (CSS reveals figure parts and stays) and `data-beat="N"` (the current
+  beat, for one-shot flourishes). It advances on a timer; each beat's hold is `DWELL` unless it
+  overrides with `data-dwell` (beat 2 lingers after its tokens stream; beats 3–4 read longer).
+  `PAUSE` is the caret "think" before streaming; `TOKEN_STEP` is the per-token gap. Hover /
+  keyboard-focus pauses the timer; a dot click stops autoplay and jumps; Replay restarts.
+  Reveal animations are CSS, keyed off `data-seen`/`data-beat`; per-cell stagger delays are set
+  inline by the engine. Without JS — or under reduced motion — `.js-arc` is never added: the
+  band shows its static figure, the beats read as a short intro paragraph, controls stay hidden,
+  and `.about-bio` carries the meaning.
 
 1. Add a `<section id="newid" class="section">…</section>` in `index.html`.
 2. Add `<li><a href="#newid">Label</a></li>` to the nav.

@@ -8,7 +8,7 @@ The look is an **editorial-sage** theme: serif display headings (Newsreader) ove
 sans-serif body/UI (Inter), a green/amber/orange/brown palette, diamond section dividers.
 Light by default, with a dark variant that activates automatically via
 `prefers-color-scheme`. Fonts are **self-hosted** (no external request) and subtle motion
-(scroll reveals, hover states, an animated dependency-parse in the bio) degrades
+(scroll reveals, hover states, an animated research arc in the bio) degrades
 gracefully without JS and respects `prefers-reduced-motion`.
 
 ## Sections
@@ -72,10 +72,12 @@ All motion is progressive enhancement (see the
 
 - **Scroll reveals** + **hover states** — CSS transitions; JS only adds the hidden
   start state, so without JS everything is visible.
-- **Animated dependency parse** — the bio opens with a sentence whose dependency arcs
-  (and a ROOT marker) draw in step by step via the Web Animations API, echoing the
-  thesis parse figures. JS measures word positions; `data-arcs` / `data-root` on the
-  `.depparse` element define the structure.
+- **Research arc** — the About section opens with a self-playing, multi-beat band
+  (`.research-arc`) that narrates the PhD's through-line: a language model predicting
+  language, then the brain (similar-but-not-identical RDM heatmaps linked by ≈), the
+  question *why?*, and the concepts probed. It plays once on view with dots + a Replay
+  control; the real bio (`.about-bio`) is always in the DOM beneath it. Build is phased
+  (`docs/research-arc-animation-plan.md`).
 - All of it is disabled under `prefers-reduced-motion: reduce`.
 
 ## CV (generated PDF)

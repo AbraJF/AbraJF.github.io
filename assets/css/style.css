@@ -171,6 +171,204 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
 /* The draw-in (stroke reveal) + fades are driven by the Web Animations API
    in buildDepParse(); initial hidden state is set inline. Reduced motion is
    handled in JS (elements painted straight to their final state). */
+.dep-scissors{fill:none;stroke:var(--orange);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---- Research-arc band (autoplay on view + controls) -------
+   A hero that walks through the PhD's central question, then hands off to
+   the static .about-bio below. The .arc-stage holds the figure; .arc-beats
+   are the narrative lines; .arc-controls (dots + replay) drive playback.
+   The whole band sits in normal page flow — no scroll hijack. The JS engine
+   adds .js-arc to <html>, which crossfades one beat at a time and shows the
+   controls; without it (no-JS or prefers-reduced-motion) the band shows its
+   static figure, the beats read as a short intro paragraph, and the controls
+   stay hidden. The real bio is always in the DOM regardless. See the arc
+   engine in index.html and docs/research-arc-animation-plan.md. */
+.research-arc{position:relative;margin:.6rem 0 1.6rem}
+
+/* The figure stage. Bottom-aligned so the caption always hugs the figure (the
+   small early beats don't leave a gap below); spare height sits above, blending
+   into the hero whitespace. Min-height keeps the caption position roughly stable
+   across beats. */
+.arc-stage{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  min-height:clamp(120px,18vh,164px)}
+/* The figure stacks the glyph row above the concept chips (beat 5). */
+.arc-figure{position:relative;display:flex;flex-direction:column;align-items:center;
+  gap:1.1rem;width:100%;max-width:520px;text-align:center}
+/* Beat 3: the two columns (LM, brain) sit side by side with the ≈ between. */
+.arc-row{display:flex;flex-direction:row;align-items:flex-start;justify-content:center;
+  gap:clamp(1rem,5vw,2.4rem)}
+/* Each column is exactly the pattern width so the two RDMs sit equidistant from
+   the ≈; the (wider) labels overflow symmetrically and don't shift the layout. */
+.arc-col{display:flex;flex-direction:column;align-items:center;gap:.7rem;width:60px}
+
+/* The glyph (reused across beats). */
+.arc-glyph{position:relative;display:flex;flex-direction:column;align-items:center;
+  gap:.45rem;color:var(--green)}
+.arc-glyph svg{width:52px;height:52px;display:block}
+.arc-glyph-label{font-family:var(--font-ui);font-size:.66rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em;color:var(--muted);white-space:nowrap}
+
+/* Beat 5: a magnifier badge on the LM glyph (we look inside the model). */
+.arc-magnifier{position:absolute;top:-8px;right:-14px;width:22px;height:22px;
+  display:flex;align-items:center;justify-content:center;border-radius:50%;
+  background:var(--card);color:var(--accent);box-shadow:0 0 0 1.5px var(--accent)}
+.arc-magnifier svg{width:13px;height:13px}
+
+/* Beat 5: the concept chips that fan in below the model. */
+.arc-concepts{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem}
+.arc-concept{font-family:var(--font-ui);font-size:.8rem;font-weight:600;
+  padding:.3rem .7rem;border:1px solid var(--accent);border-radius:999px;
+  color:var(--accent);background:var(--card);white-space:nowrap}
+
+/* Representation patterns: a 4×4 RDM under each glyph (warm/red heatmap). The
+   diagonal is the same stimulus vs itself → maximal (v3, full red), identical
+   across both. Off-diagonal cells are symmetric; the brain's differing pairs
+   carry .d (a green ring) to underline "similar, not identical". */
+.arc-pattern{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;
+  width:60px;height:60px}
+.arc-cell{background:var(--orange);border-radius:1px}
+.arc-cell.v0{opacity:.16}
+.arc-cell.v1{opacity:.42}
+.arc-cell.v2{opacity:.7}
+.arc-cell.v3{opacity:1}
+.arc-cell.d{box-shadow:0 0 0 1.5px var(--green)}
+
+/* The ≈ relation, vertically centred on the pattern row (its height matches the
+   patterns, pinned to the bottom of the columns where the patterns sit). */
+.arc-rel{align-self:flex-end;height:60px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:.15rem;color:var(--muted)}
+.arc-approx{font-family:var(--font-display);font-size:1.5rem;line-height:1;color:var(--accent)}
+.arc-rel-label{font-family:var(--font-ui);font-size:.58rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em}
+
+/* The predicted phrase inside beat 2 — reads as a generated token. */
+.arc-pred{color:var(--accent);font-weight:600}
+
+/* Narrative beat lines (static: stacked paragraph). */
+.arc-beats{margin:.6rem 0 0;text-align:center}
+.arc-beat{margin:.2rem 0;font-family:var(--font-body);color:var(--fg);
+  font-size:1.08rem;line-height:1.6}
+
+/* Controls hidden until JS un-hides them. */
+.arc-controls{display:none}
+
+/* ---- With the JS engine live (.js-arc) --------------------- */
+/* Beats stack in one place and crossfade — one shown at a time. */
+.js-arc .arc-beats{position:relative;display:grid;
+  min-height:3.4em;place-items:center;margin-top:0}
+.js-arc .arc-beat{grid-area:1/1;margin:0;max-width:30em;
+  font-size:clamp(1.05rem,2.6vw,1.3rem);
+  opacity:0;transform:translateY(8px);
+  transition:opacity .5s ease,transform .5s ease}
+.js-arc .arc-beat.is-active{opacity:1;transform:none}
+
+/* Figure elements start hidden; the cumulative data-seen list reveals them. */
+.js-arc .arc-glyph{opacity:0;transform:translateY(8px);
+  transition:opacity .55s ease,transform .55s ease}
+.js-arc .arc-stage[data-seen~="1"] .arc-glyph{opacity:1;transform:none}
+
+/* Beat 3: the brain column, the ≈, the labels and the patterns all arrive.
+   Brain column + ≈ are out of flow until then, so the lone LM stays centred. */
+.js-arc .arc-col-brain,
+.js-arc .arc-rel{display:none}
+.js-arc .arc-stage[data-seen~="3"] .arc-col-brain,
+.js-arc .arc-stage[data-seen~="3"] .arc-rel{display:flex;animation:arc-fadein .55s ease both}
+
+/* Labels + patterns are display:none (no reserved space) until beat 3, so the
+   caption hugs the lone glyph in beats 1–2 instead of sitting below an invisible
+   pattern grid. */
+.js-arc .arc-glyph-label{display:none}
+.js-arc .arc-stage[data-seen~="3"] .arc-glyph-label{display:block;animation:arc-fadein .5s ease}
+
+/* Pattern cells pop in (scale); per-cell delays are set by the engine so the LM
+   grid fills first, then the brain grid. Opacity stays at each cell's value. */
+.js-arc .arc-pattern{display:none}
+.js-arc .arc-stage[data-seen~="3"] .arc-pattern{display:grid}
+.js-arc .arc-cell{transform:scale(0);transition:transform .3s ease}
+.js-arc .arc-stage[data-seen~="3"] .arc-cell{transform:scale(1)}
+
+/* The ≈ breathes once both patterns are up. */
+.js-arc .arc-stage[data-seen~="3"] .arc-approx{
+  animation:arc-pulse 1.9s ease-in-out infinite}
+@keyframes arc-pulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
+
+/* Beat 4 — the pivot to "why?": the figure quiets (patterns + labels dim) and
+   the ≈/similar swaps to a pulsing question mark. (Static keeps ≈; the ? is a
+   JS-only flourish — the beat's text carries the question without JS.) */
+.arc-q{display:none}
+.js-arc .arc-q{font-family:var(--font-display);font-size:2.6rem;line-height:1;
+  color:var(--accent)}
+.js-arc .arc-stage[data-seen~="4"] .arc-pattern,
+.js-arc .arc-stage[data-seen~="4"] .arc-glyph-label{opacity:.28;transition:opacity .6s ease}
+.js-arc .arc-stage[data-seen~="4"] .arc-approx,
+.js-arc .arc-stage[data-seen~="4"] .arc-rel-label{display:none}
+.js-arc .arc-stage[data-seen~="4"] .arc-q{display:block;
+  animation:arc-qpulse 1.7s ease-in-out infinite}
+@keyframes arc-qpulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.16)}}
+
+/* Beat 5 — look inside the model: the brain side recedes, the LM regains focus
+   with a magnifier, and the concept chips fan in. The ? is dropped. */
+.js-arc .arc-magnifier{opacity:0;transform:scale(.6);
+  transition:opacity .4s ease,transform .4s ease}
+.js-arc .arc-concepts{display:none}
+.js-arc .arc-stage[data-seen~="5"] .arc-q{display:none}
+.js-arc .arc-stage[data-seen~="5"] .arc-col-brain,
+.js-arc .arc-stage[data-seen~="5"] .arc-rel{opacity:.18;transition:opacity .6s ease}
+.js-arc .arc-stage[data-seen~="5"] .arc-col-lm .arc-pattern,
+.js-arc .arc-stage[data-seen~="5"] .arc-col-lm .arc-glyph-label{opacity:1}
+.js-arc .arc-stage[data-seen~="5"] .arc-magnifier{opacity:1;transform:none}
+.js-arc .arc-stage[data-seen~="5"] .arc-concepts{display:flex}
+.js-arc .arc-stage[data-seen~="5"] .arc-concept{
+  animation:arc-chipin .4s ease both;animation-delay:calc(var(--c) * .12s)}
+@keyframes arc-chipin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* Beat 2 enacts prediction: "…good at pred" lands first with a blinking caret
+   that holds while the model "thinks"; then the model generates the completion
+   one token at a time (accent), the caret trailing the stream until done.
+   Streaming is JS-driven (see PAUSE / TOKEN_STEP in the arc engine), so tokens
+   reserve no width before they appear and the word joins seamlessly. */
+.arc-caret{display:none}
+.js-arc .arc-caret{display:inline-block;width:.55ch;height:1.05em;
+  margin-left:.02em;vertical-align:-.16em;background:var(--accent);border-radius:1px;
+  opacity:0}
+.js-arc .arc-beat.is-active:not(.is-typed) .arc-caret{
+  animation:arc-blink .8s steps(1,end) infinite}
+.js-arc .arc-beat.is-typed .arc-caret{display:none}
+@keyframes arc-blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Tokens stream in one by one. Hidden (no reserved width) until the engine adds
+   .is-on, then each pops in. */
+.js-arc .arc-tok{display:none}
+.js-arc .arc-tok.is-on{display:inline;animation:arc-fadein .22s ease both}
+@keyframes arc-fadein{from{opacity:0}to{opacity:1}}
+
+/* Playback controls: a row of progress dots + a replay button. */
+.js-arc .arc-controls{display:flex;align-items:center;justify-content:center;
+  gap:1rem;margin-top:1.1rem}
+.arc-dots{display:flex;gap:.5rem}
+.arc-dot{width:8px;height:8px;padding:0;border:0;border-radius:50%;
+  background:var(--border);cursor:pointer;transition:background .25s ease,transform .25s ease}
+.arc-dot:hover{background:var(--muted)}
+.arc-dot.is-active{background:var(--accent);transform:scale(1.3)}
+.arc-replay{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .6rem;
+  border:1px solid var(--border);border-radius:999px;background:none;cursor:pointer;
+  font-family:var(--font-ui);font-size:.72rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--muted);transition:color .2s ease,border-color .2s ease}
+.arc-replay:hover{color:var(--accent);border-color:var(--accent)}
+
+/* Mobile: keep LM ≈ brain side by side, scaled down to fit without colliding. */
+@media(max-width:560px){
+  .arc-row{gap:.7rem}
+  .arc-glyph svg{width:42px;height:42px}
+  .arc-pattern{width:46px;height:46px;gap:2px}
+  .arc-col{width:46px;gap:.5rem}
+  .arc-glyph-label{font-size:.52rem;letter-spacing:.04em}
+  .arc-rel{height:46px}
+  .arc-approx{font-size:1.2rem}
+  .arc-q{font-size:2rem}
+  .arc-concepts{gap:.35rem}
+  .arc-concept{font-size:.72rem;padding:.25rem .55rem}
+}
 
 /* ---- Respect prefers-reduced-motion ------------------------ */
 @media(prefers-reduced-motion:reduce){
@@ -179,4 +377,8 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
     transition:none}
   .avatar:hover,.social-icons a:hover,.chips li:hover,.button:hover{transform:none}
   .js-reveal .reveal{opacity:1;transform:none;transition:none}
+  /* The arc engine bails out under reduced motion (never adds .js-arc), but
+     guard the static state anyway: everything visible, nothing animating. */
+  .arc-glyph,.arc-pred,.arc-beat{
+    opacity:1;transform:none;transition:none;animation:none}
 }

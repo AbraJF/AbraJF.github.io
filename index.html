@@ -77,18 +77,105 @@
       </div><!-- /.hero-head -->
       </div><!-- /.hero-top -->
 
-        <!-- Animated dependency parse. Without JS this renders as the plain
-             sentence; JS overlays + draws the dependency arcs on scroll.
-             data-arcs: [headIndex, dependentIndex, label] over the .w words. -->
-        <div class="depparse" data-root="1" data-arcs='[[1,0,"Subj"],[1,3,"DObj"],[3,2,"Mod"],[3,5,"CCmp"],[5,4,"Mod"]]'>
-          <span class="sentence"><span class="w">I</span> <span class="w">study</span> <span class="w">interpretable</span> <span class="w">features</span> <span class="w">like</span> <span class="w">syntax</span></span>
+        <!-- Research arc: a hero band that walks a visitor through the PhD's
+             central question, then hands off to the static bio below. The figure
+             sits in normal page flow (no scroll hijack). When the band scrolls
+             into view the arc engine plays the beats once on a timer; dots + a
+             replay control let the visitor re-watch or jump, and hovering pauses
+             it. The real bio lives in .about-bio below, always in the DOM — so
+             no-JS, reduced-motion and crawlers get the full text with zero
+             animation, and the band degrades to a static figure + intro lines.
+             Build is phased (see docs/research-arc-animation-plan.md); the legacy
+             four-beat dep-parse engine is parked in git commit 6c9a5ca for reuse
+             at the syntax beat. -->
+        <div class="research-arc" role="group" aria-label="How language models predict language">
+          <div class="arc-stage" data-seen="" data-beat="" aria-hidden="true">
+            <div class="arc-figure">
+              <!-- Beats 1–2: just the language-model column (centred). Beat 3: the
+                   brain column joins, each glyph emits a representation pattern
+                   (a 4×4 heatmap), and an ≈ links them — similar, not identical
+                   (3 cells differ). Labels return here to disambiguate the two.
+                   The patterns are real markup so they survive no-JS / reduced
+                   motion; JS only staggers their reveal. Beat 5 wraps the glyph
+                   row so the concept chips can sit centred below it. -->
+              <div class="arc-row">
+              <div class="arc-col arc-col-lm">
+                <span class="arc-glyph arc-lm">
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="7" width="30" height="8" rx="2"/>
+                    <rect x="9" y="20" width="30" height="8" rx="2"/>
+                    <rect x="9" y="33" width="30" height="8" rx="2"/>
+                  </svg>
+                  <span class="arc-magnifier" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="M14.5 14.5L20 20"/></svg>
+                  </span>
+                </span>
+                <span class="arc-glyph-label">Language model</span>
+                <span class="arc-pattern" data-pat="lm" aria-hidden="true"><i class="arc-cell v3"></i><i class="arc-cell v1"></i><i class="arc-cell v0"></i><i class="arc-cell v2"></i><i class="arc-cell v1"></i><i class="arc-cell v3"></i><i class="arc-cell v2"></i><i class="arc-cell v1"></i><i class="arc-cell v0"></i><i class="arc-cell v2"></i><i class="arc-cell v3"></i><i class="arc-cell v0"></i><i class="arc-cell v2"></i><i class="arc-cell v1"></i><i class="arc-cell v0"></i><i class="arc-cell v3"></i></span>
+              </div>
+
+              <div class="arc-rel" aria-hidden="true">
+                <span class="arc-approx">≈</span>
+                <span class="arc-rel-label">similar</span>
+                <span class="arc-q" aria-hidden="true">?</span>
+              </div>
+
+              <div class="arc-col arc-col-brain">
+                <span class="arc-glyph arc-brain">
+                  <svg viewBox="0 0 52 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M26 7C22.5 4 17 4.5 15 8.5C9.5 7.5 5.5 12 7.5 16.5C3.5 18.5 3.5 25 8 26.5C7 31.5 11.5 36 16.5 34C18.5 38 24 38 26 33.5"/>
+                    <path d="M26 7C29.5 4 35 4.5 37 8.5C42.5 7.5 46.5 12 44.5 16.5C48.5 18.5 48.5 25 44 26.5C45 31.5 40.5 36 35.5 34C33.5 38 28 38 26 33.5"/>
+                    <path d="M26 7V40" stroke-dasharray="2.5 3"/>
+                  </svg>
+                </span>
+                <span class="arc-glyph-label">Brain</span>
+                <span class="arc-pattern" data-pat="brain" aria-hidden="true"><i class="arc-cell v3"></i><i class="arc-cell v1"></i><i class="arc-cell v0"></i><i class="arc-cell v1 d"></i><i class="arc-cell v1"></i><i class="arc-cell v3"></i><i class="arc-cell v2"></i><i class="arc-cell v1"></i><i class="arc-cell v0"></i><i class="arc-cell v2"></i><i class="arc-cell v3"></i><i class="arc-cell v0"></i><i class="arc-cell v1 d"></i><i class="arc-cell v1"></i><i class="arc-cell v0"></i><i class="arc-cell v3"></i></span>
+              </div>
+              </div><!-- /.arc-row -->
+
+              <!-- Beat 5: the human-interpretable concepts we probe inside the
+                   model. Hidden until beat 5, then the chips fan in. -->
+              <div class="arc-concepts" aria-hidden="true">
+                <span class="arc-concept" style="--c:0">Semantics</span>
+                <span class="arc-concept" style="--c:1">Syntax</span>
+                <span class="arc-concept" style="--c:2">Pragmatics</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- One narrative line per beat. Without the arc engine these stack as a
+               short intro paragraph; with it, the engine crossfades one at a time.
+               Beat 2 enacts next-word prediction: the line completes itself, the
+               predicted phrase filling in last. -->
+          <div class="arc-beats">
+            <p class="arc-beat" data-beat="1"><strong>Language models.</strong></p>
+            <p class="arc-beat" data-beat="2" data-dwell="4600">They are remarkably good at pred<span class="arc-pred"><span class="arc-tok">ict</span><span class="arc-tok">ing</span><span class="arc-tok"> language</span><span class="arc-tok">.</span></span><span class="arc-caret" aria-hidden="true"></span></p>
+            <p class="arc-beat" data-beat="3" data-dwell="3800">And, surprisingly, they also predict how the <strong>human brain</strong> responds to it.</p>
+            <p class="arc-beat" data-beat="4" data-dwell="3800">Which raises the real question: <strong>why?</strong></p>
+            <p class="arc-beat" data-beat="5">To find out, I look at which <strong>concepts</strong> a model represents.</p>
+          </div>
+
+          <!-- Playback controls (JS-only; hidden without the engine). One dot per
+               beat doubles as a progress indicator and a jump target. -->
+          <div class="arc-controls" hidden>
+            <div class="arc-dots" role="tablist" aria-label="Replay a step"></div>
+            <button type="button" class="arc-replay" aria-label="Replay the animation">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4h4"/>
+              </svg>
+              <span>Replay</span>
+            </button>
+          </div>
         </div>
-        <p>
-          More precisely, my PhD research asks how artificial and biological systems
-          represent and anticipate linguistic structure, and how human-interpretable
-          features help explain the relationship between large language models and human
-          brain activity. I work with language models, brain data, and interpretability
-          methods such as probing and concept erasure.
+
+        <!-- The real research bio. Always present, never JS-dependent. -->
+        <p class="about-bio">
+          Language models don't just predict language — they also <strong>predict how
+          the human brain responds</strong> to it. <em>Why?</em> That is the question my
+          PhD asks. I probe which human-interpretable features (like <strong>syntax</strong>)
+          models and brains represent, how accurately, and whether that is what drives a
+          model's ability to predict the brain — then <strong>erase</strong> those features
+          to test what actually matters.
         </p>
         <p>
           Alongside my research, I work part-time as an <strong>AI &amp; Innovation
@@ -277,155 +364,153 @@
       });
     })();
 
-    // ---- Animated dependency parse -------------------------------------
-    // Overlays labelled dependency arcs on the showcase sentence and draws
-    // them in on scroll, echoing the parse figures from the thesis. Pure
-    // progressive enhancement: without JS the plain sentence shows; with
-    // reduced motion the arcs are painted instantly (CSS handles that).
+    // ---- Research-arc engine (autoplay on view + controls) -------------
+    // The band sits in normal page flow — no scroll hijack. When it first scrolls
+    // into view the sequence plays once on a timer; each step:
+    //   * marks the stage data-seen="1 2 …" (cumulative — figure elements appear
+    //     and stay, keyed by CSS) and data-beat="N" (the current beat, for
+    //     one-shot flourishes),
+    //   * activates one narrative line at a time (.arc-beat.is-active),
+    //   * lights the matching progress dot.
+    // Controls: dots jump to a step (and stop autoplay); Replay restarts from the
+    // top; hovering/focusing the band pauses the timer.
+    // Progressive enhancement: the engine adds .js-arc to <html>, which hides the
+    // inactive beats and shows the controls. Without JS — or with
+    // prefers-reduced-motion — the class is never added: the band shows its static
+    // figure, the beats read as a short intro paragraph, the controls stay hidden,
+    // and the real bio (.about-bio) is always present regardless.
+    // Build is phased (docs/research-arc-animation-plan.md); the legacy four-beat
+    // dep-parse engine lives in git commit 6c9a5ca, to be ported in at the syntax
+    // beat.
     (function () {
-      var box = document.querySelector('.depparse');
-      if (!box) return;
-      var arcs;
-      try { arcs = JSON.parse(box.getAttribute('data-arcs')); } catch (e) { return; }
-      var words = Array.prototype.slice.call(box.querySelectorAll('.w'));
-      if (!words.length || !arcs.length) return;
+      var arc = document.querySelector('.research-arc');
+      if (!arc) return;
+      var stage = arc.querySelector('.arc-stage');
+      var beats = Array.prototype.slice.call(arc.querySelectorAll('.arc-beat'));
+      var controls = arc.querySelector('.arc-controls');
+      var dotsWrap = arc.querySelector('.arc-dots');
+      var replay = arc.querySelector('.arc-replay');
+      if (!stage || !beats.length) return;
 
-      var NS = 'http://www.w3.org/2000/svg';
-      var STEP = 700;                       // ms between successive steps (sequential)
-      var rootIdx = box.hasAttribute('data-root')
-        ? parseInt(box.getAttribute('data-root'), 10) : -1;
-      function arch(i, j) { return 26 + Math.abs(i - j) * 20; }  // taller for longer deps
-
-      function layout() {
-        var old = box.querySelector('.dep-svg');
-        if (old) old.remove();
-
-        // Reserve room above (arcs) and below (ROOT marker) the text.
-        var maxH = 0;
-        arcs.forEach(function (a) { maxH = Math.max(maxH, arch(a[0], a[1])); });
-        box.style.paddingTop = (maxH + 30) + 'px';
-        box.style.paddingBottom = (rootIdx >= 0 ? 52 : 0) + 'px';
-
-        var br = box.getBoundingClientRect();
-        var pts = words.map(function (w) {
-          var r = w.getBoundingClientRect();
-          return { x: r.left - br.left + r.width / 2,
-                   top: r.top - br.top, bottom: r.bottom - br.top };
-        });
-        var y0 = Math.min.apply(null, pts.map(function (p) { return p.top; })) - 4;
-        var yb = Math.max.apply(null, pts.map(function (p) { return p.bottom; })) + 2;
-
-        var svg = document.createElementNS(NS, 'svg');
-        svg.setAttribute('class', 'dep-svg');
-        svg.style.width = br.width + 'px';
-        svg.style.height = br.height + 'px';        // spans full box (arcs + ROOT)
-        box.insertBefore(svg, box.firstChild);
-
-        // ---- small builders, shared by arcs and the ROOT marker ----
-        // Each element starts hidden (inline) and stashes its own start delay;
-        // play()/snap() below either animate or jump it to the final state.
-        function curve(x1, y1, x2, y2, cy, delay) {
-          var p = document.createElementNS(NS, 'path');
-          p.setAttribute('class', 'dep-arc');
-          p.setAttribute('d', 'M ' + x1 + ' ' + y1 + ' C ' + x1 + ' ' + cy +
-                              ' ' + x2 + ' ' + cy + ' ' + x2 + ' ' + y2);
-          svg.appendChild(p);
-          var len = p.getTotalLength();
-          p._len = len; p._delay = delay;
-          p.style.strokeDasharray = len; p.style.strokeDashoffset = len;   // hidden
-        }
-        function arrow(tx, ty, dir, delay) {       // triangle pointing up or down
-          var s = 5, o = dir === 'up' ? 8 : -8;
-          var h = document.createElementNS(NS, 'path');
-          h.setAttribute('class', 'dep-head');
-          h.setAttribute('d', 'M ' + (tx - s) + ' ' + (ty + o) + ' L ' + tx + ' ' + ty +
-                              ' L ' + (tx + s) + ' ' + (ty + o) + ' Z');
-          h._delay = delay + 450; h.style.opacity = 0;
-          svg.appendChild(h);
-        }
-        function label(cx, cy, text, delay) {
-          var g = document.createElementNS(NS, 'g');
-          g.setAttribute('class', 'dep-labelg');
-          var rect = document.createElementNS(NS, 'rect');
-          rect.setAttribute('class', 'dep-labelbox'); rect.setAttribute('rx', '2');
-          var txt = document.createElementNS(NS, 'text');
-          txt.setAttribute('class', 'dep-label');
-          txt.setAttribute('x', cx); txt.setAttribute('y', cy);
-          txt.setAttribute('text-anchor', 'middle'); txt.textContent = text;
-          g.appendChild(rect); g.appendChild(txt); svg.appendChild(g);
-          var bb = txt.getBBox();
-          rect.setAttribute('x', bb.x - 4); rect.setAttribute('y', bb.y - 2);
-          rect.setAttribute('width', bb.width + 8); rect.setAttribute('height', bb.height + 4);
-          g._delay = delay + 250; g.style.opacity = 0;
-        }
-
-        // Step 0 = ROOT marker (upward arrow into the root word), then the arcs.
-        var step = 0;
-        if (rootIdx >= 0 && pts[rootIdx]) {
-          var rx = pts[rootIdx].x, ry = yb + 34;
-          curve(rx, ry - 12, rx, yb, (ry + yb) / 2, 0);   // near-vertical stem
-          arrow(rx, yb, 'up', 0);
-          label(rx, ry, 'ROOT', 0);
-          step = 1;
-        }
-        arcs.forEach(function (a, idx) {
-          var x1 = pts[a[0]].x, x2 = pts[a[1]].x;
-          var apexY = y0 - arch(a[0], a[1]), delay = (idx + step) * STEP;
-          curve(x1, y0, x2, y0, apexY, delay);
-          arrow(x2, y0, 'down', delay);
-          label((x1 + x2) / 2, apexY + 4, a[2], delay);
-        });
-      }
-
-      // Play the staggered draw-in (Web Animations API), or jump to final.
-      function play() {
-        box.querySelectorAll('.dep-arc').forEach(function (a) {
-          a.animate([{ strokeDashoffset: a._len }, { strokeDashoffset: 0 }],
-            { duration: 550, delay: a._delay, easing: 'ease', fill: 'forwards' });
-        });
-        box.querySelectorAll('.dep-head, .dep-labelg').forEach(function (e) {
-          e.animate([{ opacity: 0 }, { opacity: 1 }],
-            { duration: 240, delay: e._delay, easing: 'ease', fill: 'forwards' });
-        });
-      }
-      function snap() {                            // final state, no motion
-        box.querySelectorAll('.dep-arc').forEach(function (a) { a.style.strokeDashoffset = 0; });
-        box.querySelectorAll('.dep-head, .dep-labelg').forEach(function (e) { e.style.opacity = 1; });
-      }
-
-      // Reveal once the sentence scrolls in. Reduced-motion users get the
-      // finished parse with no animation; everyone else gets the staggered draw.
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var revealed = false;
-      function reveal() {
-        if (revealed) return; revealed = true;
-        if (reduce) snap(); else play();
-      }
-      function arm() {
-        if ('IntersectionObserver' in window) {
-          var io = new IntersectionObserver(function (es) {
-            es.forEach(function (e) { if (e.isIntersecting) { reveal(); io.disconnect(); } });
-          }, { threshold: 0.4 });
-          io.observe(box);
-        } else {
-          reveal();
+      if (reduce) return;   // leave static flow; figure + beats + bio all visible
+
+      var n = beats.length;
+      var DWELL = 2800;     // ms a beat is held before the timer advances
+      var PAUSE = 1100;     // ms the caret "thinks" before a beat's prediction streams
+      var TOKEN_STEP = 200; // ms between generated tokens
+      var active = -1, timer = null, typeTimer = null, tokTimer = null,
+          paused = false, finished = false;
+
+      document.documentElement.classList.add('js-arc');
+
+      // One dot per beat: progress indicator + jump target.
+      var dots = beats.map(function (b, i) {
+        var d = document.createElement('button');
+        d.type = 'button';
+        d.className = 'arc-dot';
+        d.setAttribute('role', 'tab');
+        d.setAttribute('aria-label', 'Step ' + (i + 1) + ' of ' + n);
+        d.addEventListener('click', function () { stop(); setBeat(i); });
+        if (dotsWrap) dotsWrap.appendChild(d);
+        return d;
+      });
+      if (controls) controls.hidden = false;
+
+      // Stagger the pattern cells: the LM grid fills first, then the brain grid.
+      [['lm', 0], ['brain', 480]].forEach(function (p) {
+        var cells = arc.querySelectorAll('.arc-pattern[data-pat="' + p[0] + '"] .arc-cell');
+        Array.prototype.forEach.call(cells, function (c, i) {
+          c.style.transitionDelay = (p[1] + i * 28) + 'ms';
+        });
+      });
+
+      function setBeat(i) {
+        if (i === active) return;
+        active = i;
+        // Cumulative "seen" list drives which figure elements are revealed.
+        var seen = [];
+        for (var k = 0; k <= i; k++) seen.push(beats[k].getAttribute('data-beat'));
+        stage.setAttribute('data-seen', seen.join(' '));
+        stage.setAttribute('data-beat', beats[i].getAttribute('data-beat'));
+        beats.forEach(function (b, k) {
+          b.classList.toggle('is-active', k === i);
+          if (k !== i) {                                  // reset the prediction phase
+            b.classList.remove('is-typed');
+            b.querySelectorAll('.arc-tok').forEach(function (t) { t.classList.remove('is-on'); });
+          }
+        });
+        dots.forEach(function (d, k) {
+          d.classList.toggle('is-active', k === i);
+          d.setAttribute('aria-selected', k === i ? 'true' : 'false');
+        });
+        // If this beat has a prediction, hold the caret (PAUSE) then stream its
+        // tokens one at a time; mark .is-typed once the last token lands.
+        clearTimeout(typeTimer); clearInterval(tokTimer);
+        var pred = beats[i].querySelector('.arc-pred');
+        if (pred) {
+          var toks = Array.prototype.slice.call(pred.querySelectorAll('.arc-tok'));
+          typeTimer = window.setTimeout(function () {
+            if (!toks.length) { beats[i].classList.add('is-typed'); return; }
+            var k = 0;
+            tokTimer = window.setInterval(function () {
+              if (k >= toks.length) {
+                clearInterval(tokTimer);
+                beats[i].classList.add('is-typed');
+                return;
+              }
+              toks[k++].classList.add('is-on');
+            }, TOKEN_STEP);
+          }, PAUSE);
         }
       }
 
-      layout();
-      if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(function () { layout(); arm(); });
-      } else {
-        arm();
+      // How long the current beat is held before advancing. Beats can override
+      // the default with data-dwell (e.g. beat 2 lingers after its prediction
+      // finishes streaming; beats 3–4 read a touch longer).
+      function dwellOf(i) {
+        var d = parseInt(beats[i].getAttribute('data-dwell'), 10);
+        return d > 0 ? d : DWELL;
       }
+      function schedule() { clearTimeout(timer); timer = window.setTimeout(tick, dwellOf(active)); }
 
-      // Re-measure on resize (the webfont / wrapping can shift word positions);
-      // a rebuilt parse that was already shown snaps straight back to final.
-      var rt;
-      window.addEventListener('resize', function () {
-        clearTimeout(rt);
-        rt = setTimeout(function () { layout(); if (revealed) snap(); }, 200);
+      // Timer-driven advance through the remaining beats.
+      function tick() {
+        if (paused) return;
+        if (active >= n - 1) { finished = true; return; }
+        setBeat(active + 1);
+        schedule();
+      }
+      function play(from) {
+        finished = false;
+        setBeat(typeof from === 'number' ? from : 0);
+        schedule();
+      }
+      function stop() { clearTimeout(timer); timer = null; finished = true; }
+
+      // Pause while the visitor is reading (hover / keyboard focus within).
+      arc.addEventListener('mouseenter', function () { paused = true; });
+      arc.addEventListener('mouseleave', function () {
+        paused = false;
+        if (!finished && timer === null) schedule();
       });
+      arc.addEventListener('focusin', function () { paused = true; });
+      arc.addEventListener('focusout', function () { paused = false; });
+
+      if (replay) replay.addEventListener('click', function () { play(0); });
+
+      // Start once the band scrolls into view (fall back to immediate play).
+      setBeat(0);
+      var started = false;
+      function begin() { if (started) return; started = true; play(0); }
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) { if (e.isIntersecting) { begin(); io.disconnect(); } });
+        }, { threshold: 0.4 });
+        io.observe(arc);
+      } else {
+        begin();
+      }
     })();
   </script>
 </body>

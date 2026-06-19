@@ -27,12 +27,20 @@ If the file is missing the page simply hides the image — nothing breaks.
 
 ## 3. Bio, social icons, and research interests
 
-- The About section opens with an **animated sentence** that draws grammar arcs over the
-  words. It lives in the `<div class="depparse">` block. To change the wording, edit the
-  words inside each `<span class="w">…</span>`. If you change the sentence, the arcs
-  (`data-arcs`) and root (`data-root`) need updating to match — ask a developer, or see
-  the developer guide. The sentence still reads normally if animations are off.
-- Edit the two bio paragraphs after it in the About section.
+- The About section opens with an **animated research band** (`<div class="research-arc">`):
+  a short, self-playing sequence that walks through the PhD's idea — a language model that
+  predicts language, then predicts the brain (two similar-but-not-identical pattern grids),
+  then the question *why?*, then the concepts probed. It plays once when scrolled into view;
+  small dots let you replay a step and a **Replay** button restarts it.
+  - The narrative lines live in `<div class="arc-beats">` as one `<p class="arc-beat">` per
+    beat — edit them like normal text. When animations are off they read as a short intro
+    paragraph.
+  - The **real bio** is the always-present `<p class="about-bio">` right below the band — this
+    is what no-JS visitors, reduced-motion users and search engines read. Keep it complete and
+    up to date; the animation is decoration on top of it.
+  - The figure (glyphs, pattern grids, concept chips) is built from plain markup — to tweak it,
+    see the developer guide. The build is phased (`docs/research-arc-animation-plan.md`).
+- The **consulting paragraph** comes after the bio in the About section — edit it like any text.
 - The round **social icons** under your name are a `<ul class="social-icons">` list —
   update each link's `href` (email, GitHub, Scholar, X, LinkedIn) or remove a `<li>`.
 - **Research interests** are chips: one `<li>` per interest inside
