@@ -17,6 +17,15 @@
   --shadow:rgba(31,51,38,.18); --scroll-shadow:rgba(21,41,28,.18);
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  /* ---- Font pairing (self-hosted, see fonts.css) -------------
+     Change these three lines to re-skin the whole site. The
+     trailing system fallback keeps text readable before the
+     webfont loads / if it fails. Bundled families:
+     Fraunces, Playfair Display, Lora, EB Garamond (display);
+     Newsreader, Source Serif 4, Lora, EB Garamond (body).      */
+  --font-display:"Newsreader",var(--serif);
+  --font-body:"Inter",var(--sans);
+  --font-ui:"Inter",var(--sans);
 }
 
 /* Dark variant — editorial palette retuned for WCAG AA on a deep-green page. */
@@ -32,11 +41,11 @@
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--fg);line-height:1.7;font-family:var(--serif)}
+body{margin:0;background:var(--bg);color:var(--fg);line-height:1.65;font-family:var(--font-body)}
 .site-header{position:sticky;top:0;background:var(--header-bg);backdrop-filter:blur(6px);border-bottom:1px solid var(--border);z-index:10}
 .nav{max-width:var(--max-width);margin:0 auto;padding:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
-.nav-brand{font-weight:700;font-size:1.18rem;text-decoration:none;color:var(--green)}
-.nav-links{list-style:none;display:flex;gap:1.3rem;margin:0;padding:0;font-family:var(--sans);font-size:.84rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.nav-brand{font-family:var(--font-display);font-weight:700;font-size:1.18rem;text-decoration:none;color:var(--green)}
+.nav-links{list-style:none;display:flex;gap:1.3rem;margin:0;padding:0;font-family:var(--font-ui);font-size:.84rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
 .nav-links a{text-decoration:none;color:var(--muted)}
 .nav-links a:hover{color:var(--orange)}
 main{max-width:var(--max-width);margin:0 auto;padding:0 1rem}
@@ -45,10 +54,10 @@ main{max-width:var(--max-width);margin:0 auto;padding:0 1rem}
 /* End-of-section divider: amber diamond centred on a fading hairline. */
 .section:not(:last-of-type)::after{content:"";position:absolute;left:0;right:0;bottom:2rem;height:1px;background:linear-gradient(90deg,transparent,var(--border) 20%,var(--border) 80%,transparent)}
 .section:not(:last-of-type)::before{content:"\25C6";position:absolute;left:50%;bottom:1.35rem;transform:translateX(-50%);background:var(--bg);padding:0 .7rem;color:var(--amber);font-size:.72rem;z-index:1}
-h1{font-size:3.1rem;line-height:1.1;margin:0 0 .4rem;letter-spacing:-.01em;color:var(--green)}
+h1{font-family:var(--font-display);font-size:3.2rem;line-height:1.08;margin:0 0 .4rem;letter-spacing:-.015em;color:var(--green)}
 .nickname{color:var(--orange);font-style:italic;font-weight:400}
-h2{font-family:var(--sans);font-size:1.35rem;text-transform:uppercase;letter-spacing:.14em;color:var(--accent);margin:0 0 1.6rem;font-weight:700}
-h3{font-size:1.5rem;margin:1.6rem 0 .5rem;color:var(--green)}
+h2{font-family:var(--font-ui);font-size:1.35rem;text-transform:uppercase;letter-spacing:.14em;color:var(--accent);margin:0 0 1.6rem;font-weight:700}
+h3{font-family:var(--font-display);font-size:1.35rem;margin:1.6rem 0 .5rem;letter-spacing:-.01em;color:var(--green)}
 a{color:var(--accent)}
 a:hover{color:var(--orange)}
 main a:hover,.tagline a:hover{text-decoration:underline}
@@ -56,21 +65,21 @@ p{font-size:1.08rem}
 .hero-top{display:flex;gap:1.8rem;align-items:center;flex-wrap:wrap;margin-bottom:1.4rem}
 .hero-head{flex:1;min-width:240px}
 .avatar{width:150px;height:150px;border-radius:50%;object-fit:cover;border:4px solid var(--card);box-shadow:0 6px 20px var(--shadow)}
-.tagline{font-family:var(--sans);color:var(--muted);font-size:.98rem;margin:.2rem 0}
+.tagline{font-family:var(--font-ui);color:var(--muted);font-size:.98rem;margin:.2rem 0}
 .tagline a{color:var(--green);font-weight:600}
 .social-icons{list-style:none;padding:0;margin:.7rem 0 0;display:flex;gap:.7rem}
 .social-icons a{display:inline-flex;width:36px;height:36px;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:50%;color:var(--green);background:var(--card)}
 .social-icons a:hover{color:var(--on-accent);background:linear-gradient(135deg,var(--amber),var(--orange));border-color:transparent}
 .social-icons svg{width:18px;height:18px;fill:currentColor}
 .interests{margin-top:1.5rem}
-.interests-label{font-family:var(--sans);display:block;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.6rem}
-.chips{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.5rem;font-family:var(--sans)}
+.interests-label{font-family:var(--font-ui);display:block;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.6rem}
+.chips{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.5rem;font-family:var(--font-ui)}
 .chips li{font-size:.86rem;font-weight:600;padding:.32rem .8rem;border:1px solid var(--green);border-radius:2px;color:var(--green);background:var(--card)}
 .news-list,.pub-list,.timeline,.links,.services{list-style:none;padding:0}
 .news{display:grid;grid-template-columns:70px 116px 1fr;gap:.8rem;align-items:baseline;padding:.6rem 0;border-bottom:1px solid var(--border)}
 .news-date{color:var(--muted);font-style:italic}
-.news-text{font-family:var(--sans);font-size:.95rem}
-.tag{font-family:var(--sans);display:inline-block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.14rem .55rem;border-radius:2px;color:var(--on-accent)}
+.news-text{font-family:var(--font-ui);font-size:.95rem}
+.tag{font-family:var(--font-ui);display:inline-block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.14rem .55rem;border-radius:2px;color:var(--on-accent)}
 .tag-full,.tag-conference{background:var(--green)}
 .tag-paper{background:var(--brown)}
 .tag-preprint{background:var(--orange)}
@@ -79,21 +88,21 @@ p{font-size:1.08rem}
 .tag-part,.tag-news{background:var(--card);color:var(--green);border:1px solid var(--border)}
 .pub{padding:1rem 0;border-bottom:1px solid var(--border)}
 .news:last-child,.pub:last-child{border-bottom:none}
-.pub-title{font-weight:700;font-size:1.16rem;display:block;color:var(--green)}
-.pub-authors{font-family:var(--sans);font-size:.95rem;display:block}
+.pub-title{font-family:var(--font-display);font-weight:700;font-size:1.16rem;display:block;color:var(--green)}
+.pub-authors{font-family:var(--font-ui);font-size:.95rem;display:block}
 .pub-venue{color:var(--muted);font-style:italic;display:block}
-.pub-links{font-family:var(--sans);font-size:.86rem;margin-top:.2rem}
+.pub-links{font-family:var(--font-ui);font-size:.86rem;margin-top:.2rem}
 .timeline li{display:flex;gap:1rem;padding:.5rem 0}
 .timeline .when{flex:0 0 110px;color:var(--brown);font-style:italic;font-size:.95rem}
-.timeline .what{font-family:var(--sans);font-size:.98rem}
+.timeline .what{font-family:var(--font-ui);font-size:.98rem}
 .timeline .what .tag{margin-left:.6rem}
-.button{font-family:var(--sans);display:inline-block;padding:.6rem 1.2rem;background:var(--green);color:var(--on-accent);text-decoration:none;border-radius:3px;font-weight:600}
+.button{font-family:var(--font-ui);display:inline-block;padding:.6rem 1.2rem;background:var(--green);color:var(--on-accent);text-decoration:none;border-radius:3px;font-weight:600}
 .button:hover{color:var(--on-accent);background:var(--accent)}
-.services{font-family:var(--sans);list-style:disc;padding-left:1.4rem;margin:.4rem 0}
+.services{font-family:var(--font-ui);list-style:disc;padding-left:1.4rem;margin:.4rem 0}
 .services li{padding:.18rem 0}
 .services li::marker{color:var(--green)}
-.links{font-family:var(--sans);display:flex;flex-wrap:wrap;gap:.7rem 1.5rem}
-.site-footer{font-family:var(--sans);max-width:var(--max-width);margin:0 auto;padding:2rem 1rem 3rem;color:var(--muted)}
+.links{font-family:var(--font-ui);display:flex;flex-wrap:wrap;gap:.7rem 1.5rem}
+.site-footer{font-family:var(--font-ui);max-width:var(--max-width);margin:0 auto;padding:2rem 1rem 3rem;color:var(--muted)}
 .site-footer p{font-size:.75rem;font-style:italic;margin:0}
 @media(max-width:480px){h1{font-size:2.5rem}.hero-top{flex-direction:column;text-align:center}.social-icons{justify-content:center}.news{grid-template-columns:1fr;gap:.2rem}}
 /* Mobile nav: stack brand over a full-width, horizontally scrollable link row.
@@ -108,4 +117,66 @@ p{font-size:1.08rem}
   .nav-links::-webkit-scrollbar{height:6px}
   .nav-links::-webkit-scrollbar-thumb{background:var(--green);border-radius:3px}
   .nav-links::-webkit-scrollbar-track{background:var(--border);border-radius:3px}
+}
+
+/* ============================================================
+   Motion & flair — progressive enhancement.
+
+   Hover transitions apply to everyone. On-scroll reveals are
+   gated behind the `.js-reveal` class, which the inline script
+   in index.html adds to <html> ONLY when JS runs AND the user
+   has not asked for reduced motion. So:
+     - no JS            -> nothing is hidden, content shows as-is
+     - reduced motion   -> reveals + transitions are switched off
+     - JS + full motion -> elements fade/slide in once on scroll
+   ============================================================ */
+
+/* ---- Hover transitions (subtle, ~200ms) -------------------- */
+a,.nav-links a,.button,.chips li,.social-icons a,.tag{
+  transition:color .2s ease,background-color .2s ease,border-color .2s ease,
+             transform .2s ease,box-shadow .2s ease}
+.avatar{transition:transform .4s ease,box-shadow .4s ease}
+.avatar:hover{transform:scale(1.03)}
+.social-icons a:hover{transform:translateY(-2px)}
+.chips li:hover{transform:translateY(-2px);border-color:var(--orange);color:var(--orange)}
+.button:hover{transform:translateY(-2px);box-shadow:0 6px 16px var(--shadow)}
+
+/* Animated underline on nav links (grows from the left). */
+.nav-links a{position:relative}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:-3px;height:2px;width:0;
+  background:var(--orange);transition:width .25s ease}
+.nav-links a:hover::after{width:100%}
+
+/* ---- On-scroll reveal -------------------------------------- */
+.js-reveal .reveal{opacity:0;transform:translateY(18px);
+  transition:opacity .6s ease,transform .6s ease;transition-delay:var(--reveal-delay,0ms)}
+.js-reveal .reveal.is-visible{opacity:1;transform:none}
+
+/* ---- Animated dependency parse (bio opener) ----------------
+   A showcase sentence with labelled dependency arcs that draw
+   themselves in, echoing the parse figures from the thesis.
+   The SVG overlay is built + measured by JS; without JS only
+   the plain sentence shows. See buildDepParse() in index.html. */
+.depparse{position:relative;margin:.2rem 0 1.5rem;overflow-x:auto;overflow-y:hidden}
+.depparse .sentence{display:flex;flex-wrap:nowrap;gap:.42em;align-items:flex-end;
+  font-family:var(--font-display);font-size:clamp(1.35rem,4.5vw,1.95rem);
+  line-height:1.25;color:var(--green);width:max-content;max-width:100%}
+.depparse .w{position:relative;white-space:nowrap}
+.dep-svg{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+.dep-arc{fill:none;stroke:var(--brown);stroke-width:1.6}
+.dep-head{fill:var(--brown)}
+.dep-labelbox{fill:var(--card);stroke:var(--border);stroke-width:1}
+.dep-label{fill:var(--accent);font-family:var(--font-ui);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.03em}
+/* The draw-in (stroke reveal) + fades are driven by the Web Animations API
+   in buildDepParse(); initial hidden state is set inline. Reduced motion is
+   handled in JS (elements painted straight to their final state). */
+
+/* ---- Respect prefers-reduced-motion ------------------------ */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  a,.nav-links a,.button,.chips li,.social-icons a,.tag,.avatar,.nav-links a::after{
+    transition:none}
+  .avatar:hover,.social-icons a:hover,.chips li:hover,.button:hover{transform:none}
+  .js-reveal .reveal{opacity:1;transform:none;transition:none}
 }

@@ -14,6 +14,7 @@
   <meta property="og:description" content="PhD researcher in NeuroAI at Max Planck Institute for Psycholinguistics; part-time AI & Innovation consultant at ClickValue." />
   <meta property="og:type" content="website" />
 
+  <link rel="stylesheet" href="assets/css/fonts.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
@@ -76,17 +77,24 @@
       </div><!-- /.hero-head -->
       </div><!-- /.hero-top -->
 
+        <!-- Animated dependency parse. Without JS this renders as the plain
+             sentence; JS overlays + draws the dependency arcs on scroll.
+             data-arcs: [headIndex, dependentIndex, label] over the .w words. -->
+        <div class="depparse" data-root="1" data-arcs='[[1,0,"Subj"],[1,3,"DObj"],[3,2,"Mod"],[3,5,"CCmp"],[5,4,"Mod"]]'>
+          <span class="sentence"><span class="w">I</span> <span class="w">study</span> <span class="w">interpretable</span> <span class="w">features</span> <span class="w">like</span> <span class="w">syntax</span></span>
+        </div>
         <p>
-          I am an interdisciplinary researcher working at the intersection of machine
-          learning, linguistics, and cognitive neuroscience. My PhD studies predictive
-          computation in language — how artificial and biological systems represent and
-          anticipate linguistic structure — using language models, brain data, and
-          interpretability methods such as probing and concept erasure.
+          More precisely, my PhD research asks how artificial and biological systems
+          represent and anticipate linguistic structure, and how human-interpretable
+          features help explain the relationship between large language models and human
+          brain activity. I work with language models, brain data, and interpretability
+          methods such as probing and concept erasure.
         </p>
         <p>
-          Alongside research I work part-time as an <strong>AI &amp; Innovation
-          consultant and engineer at ClickValue</strong>, building applied machine-learning
-          systems — from retrieval-augmented AI agents to causal-impact analytics pipelines.
+          Alongside my research, I work part-time as an <strong>AI &amp; Innovation
+          Consultant at ClickValue</strong>, building applied machine-learning
+          systems and automation — from retrieval-augmented AI agents to causal-impact
+          analytics pipelines.
         </p>
         <div class="interests">
           <span class="interests-label">Research interests</span>
@@ -110,9 +118,14 @@
       -->
       <ul class="news-list">
         <li class="news">
-          <span class="news-date">2025</span>
+          <span class="news-date">2026</span>
           <span class="tag tag-news">News</span>
           <span class="news-text">Started my PhD at the <a href="https://lpc-lab.github.io/" target="_blank" rel="noopener">Language and Predictive Computation Group</a>, <a href="https://www.mpi.nl/" target="_blank" rel="noopener">Max Planck Institute for Psycholinguistics</a>, Nijmegen, supervised by <a href="https://michaheilbron.github.io/" target="_blank" rel="noopener">Dr. Micha Heilbron</a>.</span>
+        </li>
+        <li class="news">
+          <span class="news-date">2025</span>
+          <span class="tag tag-news">News</span>
+          <span class="news-text">Obtained my Research MSc in Brain &amp; Cognitive Sciences (<em>cum laude</em>) at the University of Amsterdam.</span>
         </li>
         <li class="news">
           <span class="news-date">2024</span>
@@ -156,9 +169,7 @@
         <li>Applied ML / NLP prototyping, web apps, and data pipelines</li>
         <li>Causal-impact analysis, A/B experiment design, and statistical consulting</li>
         <li>LLM evaluation, interpretability, and model-behaviour auditing</li>
-        <li>Data strategy, dashboards, and analytics engineering</li>
-        <li>Technical workshops and team upskilling on applied AI</li>
-        <li>Workflow automation and digital transformation</li>
+        <li>Workflow automation, dashboards, and analytics engineering</li>
       </ul>
       <p>
         Interested in working together?
@@ -185,16 +196,16 @@
       <h3>Experience</h3>
       <ul class="timeline">
         <li>
-          <span class="when">2025 – present</span>
+          <span class="when">2026 – present</span>
           <span class="what">PhD Researcher — <a href="https://lpc-lab.github.io/" target="_blank" rel="noopener">Language and Predictive Computation Group</a>, <a href="https://www.mpi.nl/" target="_blank" rel="noopener">Max Planck Institute for Psycholinguistics</a>, Nijmegen. Supervised by <a href="https://michaheilbron.github.io/" target="_blank" rel="noopener">Dr. Micha Heilbron</a>. <span class="tag tag-full">Full-time</span></span>
         </li>
         <li>
           <span class="when">2026 – present</span>
-          <span class="what">Consultant, Data &amp; AI specialist — ClickValue <span class="tag tag-part">Part-time</span></span>
+          <span class="what">AI &amp; Innovation Consultant — ClickValue <span class="tag tag-part">Part-time</span></span>
         </li>
         <li>
           <span class="when">2024 – 2026</span>
-          <span class="what">Consultant, Data &amp; AI specialist — ClickValue <span class="tag tag-full">Full-time</span></span>
+          <span class="what">AI &amp; Innovation Consultant — ClickValue <span class="tag tag-full">Full-time</span></span>
         </li>
         <li>
           <span class="when">2024 – 2025</span>
@@ -228,6 +239,194 @@
   <script>
     // Auto-update the footer year. Pure progressive enhancement; site works without JS.
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ---- On-scroll reveal (progressive enhancement) ----------------------
+    // Bails out — leaving all content visible — when the browser lacks
+    // IntersectionObserver or the user prefers reduced motion. The hidden
+    // start state lives behind the .js-reveal class, added only on success.
+    (function () {
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce || !('IntersectionObserver' in window)) return;
+
+      document.documentElement.classList.add('js-reveal');
+
+      // Reveal these blocks; siblings in a group stagger slightly.
+      var groups = [
+        ['.hero-top'], ['#about > p'], ['.interests'],
+        ['#news .news'], ['#publications .pub'],
+        ['#consulting > p', '#consulting h3', '#consulting .services'],
+        ['#cv h3', '#cv .timeline li', '#cv .button']
+      ];
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+      groups.forEach(function (selectors) {
+        var nodes = [];
+        selectors.forEach(function (s) {
+          Array.prototype.push.apply(nodes, document.querySelectorAll(s));
+        });
+        nodes.forEach(function (el, i) {
+          el.classList.add('reveal');
+          el.style.setProperty('--reveal-delay', Math.min(i, 6) * 60 + 'ms');
+          io.observe(el);
+        });
+      });
+    })();
+
+    // ---- Animated dependency parse -------------------------------------
+    // Overlays labelled dependency arcs on the showcase sentence and draws
+    // them in on scroll, echoing the parse figures from the thesis. Pure
+    // progressive enhancement: without JS the plain sentence shows; with
+    // reduced motion the arcs are painted instantly (CSS handles that).
+    (function () {
+      var box = document.querySelector('.depparse');
+      if (!box) return;
+      var arcs;
+      try { arcs = JSON.parse(box.getAttribute('data-arcs')); } catch (e) { return; }
+      var words = Array.prototype.slice.call(box.querySelectorAll('.w'));
+      if (!words.length || !arcs.length) return;
+
+      var NS = 'http://www.w3.org/2000/svg';
+      var STEP = 700;                       // ms between successive steps (sequential)
+      var rootIdx = box.hasAttribute('data-root')
+        ? parseInt(box.getAttribute('data-root'), 10) : -1;
+      function arch(i, j) { return 26 + Math.abs(i - j) * 20; }  // taller for longer deps
+
+      function layout() {
+        var old = box.querySelector('.dep-svg');
+        if (old) old.remove();
+
+        // Reserve room above (arcs) and below (ROOT marker) the text.
+        var maxH = 0;
+        arcs.forEach(function (a) { maxH = Math.max(maxH, arch(a[0], a[1])); });
+        box.style.paddingTop = (maxH + 30) + 'px';
+        box.style.paddingBottom = (rootIdx >= 0 ? 52 : 0) + 'px';
+
+        var br = box.getBoundingClientRect();
+        var pts = words.map(function (w) {
+          var r = w.getBoundingClientRect();
+          return { x: r.left - br.left + r.width / 2,
+                   top: r.top - br.top, bottom: r.bottom - br.top };
+        });
+        var y0 = Math.min.apply(null, pts.map(function (p) { return p.top; })) - 4;
+        var yb = Math.max.apply(null, pts.map(function (p) { return p.bottom; })) + 2;
+
+        var svg = document.createElementNS(NS, 'svg');
+        svg.setAttribute('class', 'dep-svg');
+        svg.style.width = br.width + 'px';
+        svg.style.height = br.height + 'px';        // spans full box (arcs + ROOT)
+        box.insertBefore(svg, box.firstChild);
+
+        // ---- small builders, shared by arcs and the ROOT marker ----
+        // Each element starts hidden (inline) and stashes its own start delay;
+        // play()/snap() below either animate or jump it to the final state.
+        function curve(x1, y1, x2, y2, cy, delay) {
+          var p = document.createElementNS(NS, 'path');
+          p.setAttribute('class', 'dep-arc');
+          p.setAttribute('d', 'M ' + x1 + ' ' + y1 + ' C ' + x1 + ' ' + cy +
+                              ' ' + x2 + ' ' + cy + ' ' + x2 + ' ' + y2);
+          svg.appendChild(p);
+          var len = p.getTotalLength();
+          p._len = len; p._delay = delay;
+          p.style.strokeDasharray = len; p.style.strokeDashoffset = len;   // hidden
+        }
+        function arrow(tx, ty, dir, delay) {       // triangle pointing up or down
+          var s = 5, o = dir === 'up' ? 8 : -8;
+          var h = document.createElementNS(NS, 'path');
+          h.setAttribute('class', 'dep-head');
+          h.setAttribute('d', 'M ' + (tx - s) + ' ' + (ty + o) + ' L ' + tx + ' ' + ty +
+                              ' L ' + (tx + s) + ' ' + (ty + o) + ' Z');
+          h._delay = delay + 450; h.style.opacity = 0;
+          svg.appendChild(h);
+        }
+        function label(cx, cy, text, delay) {
+          var g = document.createElementNS(NS, 'g');
+          g.setAttribute('class', 'dep-labelg');
+          var rect = document.createElementNS(NS, 'rect');
+          rect.setAttribute('class', 'dep-labelbox'); rect.setAttribute('rx', '2');
+          var txt = document.createElementNS(NS, 'text');
+          txt.setAttribute('class', 'dep-label');
+          txt.setAttribute('x', cx); txt.setAttribute('y', cy);
+          txt.setAttribute('text-anchor', 'middle'); txt.textContent = text;
+          g.appendChild(rect); g.appendChild(txt); svg.appendChild(g);
+          var bb = txt.getBBox();
+          rect.setAttribute('x', bb.x - 4); rect.setAttribute('y', bb.y - 2);
+          rect.setAttribute('width', bb.width + 8); rect.setAttribute('height', bb.height + 4);
+          g._delay = delay + 250; g.style.opacity = 0;
+        }
+
+        // Step 0 = ROOT marker (upward arrow into the root word), then the arcs.
+        var step = 0;
+        if (rootIdx >= 0 && pts[rootIdx]) {
+          var rx = pts[rootIdx].x, ry = yb + 34;
+          curve(rx, ry - 12, rx, yb, (ry + yb) / 2, 0);   // near-vertical stem
+          arrow(rx, yb, 'up', 0);
+          label(rx, ry, 'ROOT', 0);
+          step = 1;
+        }
+        arcs.forEach(function (a, idx) {
+          var x1 = pts[a[0]].x, x2 = pts[a[1]].x;
+          var apexY = y0 - arch(a[0], a[1]), delay = (idx + step) * STEP;
+          curve(x1, y0, x2, y0, apexY, delay);
+          arrow(x2, y0, 'down', delay);
+          label((x1 + x2) / 2, apexY + 4, a[2], delay);
+        });
+      }
+
+      // Play the staggered draw-in (Web Animations API), or jump to final.
+      function play() {
+        box.querySelectorAll('.dep-arc').forEach(function (a) {
+          a.animate([{ strokeDashoffset: a._len }, { strokeDashoffset: 0 }],
+            { duration: 550, delay: a._delay, easing: 'ease', fill: 'forwards' });
+        });
+        box.querySelectorAll('.dep-head, .dep-labelg').forEach(function (e) {
+          e.animate([{ opacity: 0 }, { opacity: 1 }],
+            { duration: 240, delay: e._delay, easing: 'ease', fill: 'forwards' });
+        });
+      }
+      function snap() {                            // final state, no motion
+        box.querySelectorAll('.dep-arc').forEach(function (a) { a.style.strokeDashoffset = 0; });
+        box.querySelectorAll('.dep-head, .dep-labelg').forEach(function (e) { e.style.opacity = 1; });
+      }
+
+      // Reveal once the sentence scrolls in. Reduced-motion users get the
+      // finished parse with no animation; everyone else gets the staggered draw.
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var revealed = false;
+      function reveal() {
+        if (revealed) return; revealed = true;
+        if (reduce) snap(); else play();
+      }
+      function arm() {
+        if ('IntersectionObserver' in window) {
+          var io = new IntersectionObserver(function (es) {
+            es.forEach(function (e) { if (e.isIntersecting) { reveal(); io.disconnect(); } });
+          }, { threshold: 0.4 });
+          io.observe(box);
+        } else {
+          reveal();
+        }
+      }
+
+      layout();
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () { layout(); arm(); });
+      } else {
+        arm();
+      }
+
+      // Re-measure on resize (the webfont / wrapping can shift word positions);
+      // a rebuilt parse that was already shown snaps straight back to final.
+      var rt;
+      window.addEventListener('resize', function () {
+        clearTimeout(rt);
+        rt = setTimeout(function () { layout(); if (revealed) snap(); }, 200);
+      });
+    })();
   </script>
 </body>
 </html>

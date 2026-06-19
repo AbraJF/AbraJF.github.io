@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Font playground — Bram Fresen site</title>
+
+  <!-- Base site styles. Fonts here are pulled live from Google Fonts
+       (preview only — the LIVE site self-hosts just the chosen pair). -->
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <style>
+    .fp-bar{position:sticky;top:0;z-index:50;background:var(--card);
+      border-bottom:1px solid var(--border);box-shadow:0 2px 10px var(--shadow);
+      font-family:var(--font-ui);padding:.7rem 1rem}
+    .fp-row{max-width:var(--max-width);margin:0 auto;display:flex;
+      flex-wrap:wrap;gap:.8rem 1.2rem;align-items:flex-end}
+    .fp-field{display:flex;flex-direction:column;gap:.2rem}
+    .fp-field label{font-size:.68rem;font-weight:700;text-transform:uppercase;
+      letter-spacing:.1em;color:var(--muted)}
+    .fp-field select{font-family:var(--font-ui);font-size:.92rem;padding:.3rem .5rem;
+      border:1px solid var(--border);border-radius:3px;background:var(--bg);color:var(--fg);min-width:170px}
+    .fp-presets{display:flex;flex-wrap:wrap;gap:.4rem;max-width:var(--max-width);margin:.6rem auto 0}
+    .fp-presets button{font-family:var(--font-ui);font-size:.76rem;font-weight:600;
+      cursor:pointer;padding:.3rem .65rem;border:1px solid var(--green);border-radius:2px;
+      background:var(--card);color:var(--green)}
+    .fp-presets button:hover{background:var(--green);color:var(--on-accent)}
+    .fp-current{max-width:var(--max-width);margin:.55rem auto 0;font-size:.78rem;color:var(--muted)}
+    .fp-current code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--accent)}
+    .fp-note{max-width:var(--max-width);margin:1.4rem auto 0;padding:0 1rem;
+      font-family:var(--font-ui);font-size:.85rem;color:var(--muted)}
+    .fp-note b{color:var(--fg)}
+  </style>
+</head>
+<body>
+
+  <div class="fp-bar">
+    <div class="fp-row">
+      <div class="fp-field">
+        <label for="fp-display">Display / headings</label>
+        <select id="fp-display"></select>
+      </div>
+      <div class="fp-field">
+        <label for="fp-body">Body / reading</label>
+        <select id="fp-body"></select>
+      </div>
+      <div class="fp-field">
+        <label for="fp-ui">UI / labels</label>
+        <select id="fp-ui"></select>
+      </div>
+    </div>
+    <div class="fp-presets" id="fp-presets"></div>
+    <p class="fp-current" id="fp-current"></p>
+  </div>
+
+  <p class="fp-note">
+    <b>Preview only</b> — fonts load live from Google Fonts here so you can browse fast.
+    The live site self-hosts <i>only</i> the pair you pick (no external request). Italics
+    may look slightly different until self-hosted. Tell me the combo you like.
+  </p>
+
+  <main id="top">
+    <section id="about" class="section">
+      <div class="hero-top">
+        <div class="hero-head">
+          <h1>Abraham Jacob Fresen <span class="nickname">(Bram)</span></h1>
+          <p class="tagline">PhD Researcher · Language and Predictive Computation Group, Max Planck Institute for Psycholinguistics, Nijmegen</p>
+          <p class="tagline">Part-time AI &amp; Innovation Consultant · ClickValue</p>
+        </div>
+      </div>
+      <p>
+        I am an interdisciplinary researcher working at the intersection of machine
+        learning, linguistics, and cognitive neuroscience. My PhD research studies how
+        artificial and biological systems represent and anticipate linguistic structure,
+        and how these representations help explain the relationship between large language
+        models and human brain activity. I use language models, brain data, and
+        interpretability methods such as probing and concept erasure.
+      </p>
+      <div class="interests">
+        <span class="interests-label">Research interests</span>
+        <ul class="chips">
+          <li>NeuroAI</li><li>Predictive computation</li><li>Model–brain alignment</li>
+          <li>Mechanistic interpretability</li><li>Computational linguistics</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="news" class="section">
+      <h2>News</h2>
+      <ul class="news-list">
+        <li class="news">
+          <span class="news-date">2026</span><span class="tag tag-news">News</span>
+          <span class="news-text">Started my PhD at the Language and Predictive Computation Group, Max Planck Institute for Psycholinguistics, Nijmegen, supervised by Dr. Micha Heilbron.</span>
+        </li>
+        <li class="news">
+          <span class="news-date">2025</span><span class="tag tag-news">News</span>
+          <span class="news-text">Obtained my Research MSc in Brain &amp; Cognitive Sciences (<em>cum laude</em>) at the University of Amsterdam.</span>
+        </li>
+      </ul>
+    </section>
+
+    <section id="publications" class="section">
+      <h2>Publications</h2>
+      <ul class="pub-list">
+        <li class="pub">
+          <span class="pub-title">Language models that accurately represent syntactic structure exhibit higher representational similarity to brain activity</span>
+          <span class="pub-authors">Fresen, A. J., Choenni, R., Heilbron, M., Zuidema, W., &amp; de Heer Kloots, M.</span>
+          <span class="pub-venue">Proceedings of the 46th Annual Meeting of the Cognitive Science Society (CogSci), 2024</span>
+        </li>
+      </ul>
+    </section>
+
+    <section id="cv" class="section">
+      <h2>CV</h2>
+      <h3>Education</h3>
+      <ul class="timeline">
+        <li><span class="when">2022 – 2025</span>
+          <span class="what">Research MSc Brain &amp; Cognitive Sciences (<em>Cum Laude</em>) — University of Amsterdam</span></li>
+      </ul>
+      <h3>Experience</h3>
+      <ul class="timeline">
+        <li><span class="when">2026 – present</span>
+          <span class="what">PhD Researcher — Language and Predictive Computation Group, MPI for Psycholinguistics, Nijmegen. <span class="tag tag-full">Full-time</span></span></li>
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    // ---- Catalogue (Google Fonts). type drives the dropdown grouping. ----
+    var FONTS = [
+      // serif
+      {n:'Fraunces',          t:'serif'},
+      {n:'Playfair Display',  t:'serif'},
+      {n:'Lora',              t:'serif'},
+      {n:'EB Garamond',       t:'serif'},
+      {n:'Cormorant Garamond',t:'serif'},
+      {n:'Libre Baskerville', t:'serif'},
+      {n:'Spectral',          t:'serif'},
+      {n:'Crimson Pro',       t:'serif'},
+      {n:'Bitter',            t:'serif'},
+      {n:'Source Serif 4',    t:'serif'},
+      {n:'Newsreader',        t:'serif'},
+      {n:'IBM Plex Serif',    t:'serif'},
+      // sans
+      {n:'Inter',             t:'sans'},
+      {n:'Source Sans 3',     t:'sans'},
+      {n:'Work Sans',         t:'sans'},
+      {n:'IBM Plex Sans',     t:'sans'},
+      {n:'Manrope',           t:'sans'},
+      {n:'Space Grotesk',     t:'sans'},
+      {n:'Sora',              t:'sans'},
+      {n:'Outfit',            t:'sans'},
+      {n:'Epilogue',          t:'sans'},
+      {n:'Public Sans',       t:'sans'},
+      {n:'Archivo',           t:'sans'},
+      {n:'Atkinson Hyperlegible', t:'sans'},
+      // system fallbacks (no download)
+      {n:'System serif',      t:'system', stack:'"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif'},
+      {n:'System sans',       t:'system', stack:'-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif'}
+    ];
+
+    // ---- Presets: [label, display, body, ui] ----
+    var PRESETS = [
+      ['Editorial Warm',   'Fraunces',           'Newsreader',     'Inter'],
+      ['Classic Academic', 'Playfair Display',   'Source Serif 4', 'Inter'],
+      ['Modern Sans',      'Space Grotesk',      'Inter',          'Inter'],
+      ['Humanist Sans',    'Work Sans',          'Source Sans 3',  'Work Sans'],
+      ['Serif + Sans',     'Fraunces',           'Inter',          'Inter'],
+      ['Tech Minimal',     'Sora',               'IBM Plex Sans',  'IBM Plex Sans'],
+      ['Literary',         'Cormorant Garamond', 'EB Garamond',    'Inter'],
+      ['Plex Academic',    'IBM Plex Serif',     'IBM Plex Sans',  'IBM Plex Sans'],
+      ['Contemporary',     'Outfit',             'Manrope',        'Manrope'],
+      ['High Contrast',    'Playfair Display',   'Lora',           'Inter'],
+      ['Friendly',         'Epilogue',           'Public Sans',    'Public Sans'],
+      ['Readable',         'Bitter',             'Atkinson Hyperlegible', 'Atkinson Hyperlegible']
+    ];
+
+    var root=document.documentElement;
+    var selD=document.getElementById('fp-display');
+    var selB=document.getElementById('fp-body');
+    var selU=document.getElementById('fp-ui');
+    var cur=document.getElementById('fp-current');
+    var loaded={};
+
+    function meta(name){ for(var i=0;i<FONTS.length;i++) if(FONTS[i].n===name) return FONTS[i]; return null; }
+    function stackOf(name){
+      var m=meta(name); if(!m) return name;
+      if(m.t==='system') return m.stack;
+      var fb = m.t==='sans'
+        ? ',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif'
+        : ',"Iowan Old Style",Palatino,Georgia,serif';
+      return '"'+name+'"'+fb;
+    }
+    // Inject a Google Fonts <link> for a family once.
+    function ensureLoaded(name){
+      var m=meta(name); if(!m||m.t==='system'||loaded[name]) return;
+      loaded[name]=true;
+      var fam=name.replace(/ /g,'+');
+      var l=document.createElement('link'); l.rel='stylesheet';
+      l.href='https://fonts.googleapis.com/css2?family='+fam+':ital,wght@0,400;0,600;0,700;1,400&display=swap';
+      // Fonts without italic still resolve (Google ignores the missing axis variant gracefully via fallback request);
+      // if a family rejects the italic axis, retry without it.
+      l.onerror=function(){
+        var l2=document.createElement('link'); l2.rel='stylesheet';
+        l2.href='https://fonts.googleapis.com/css2?family='+fam+':wght@400;600;700&display=swap';
+        document.head.appendChild(l2);
+      };
+      document.head.appendChild(l);
+    }
+
+    function fill(sel){
+      var groups=[['Serif','serif'],['Sans-serif','sans'],['System','system']];
+      groups.forEach(function(g){
+        var og=document.createElement('optgroup'); og.label=g[0];
+        FONTS.filter(function(f){return f.t===g[1];}).forEach(function(f){
+          var o=document.createElement('option'); o.value=f.n; o.textContent=f.n; og.appendChild(o);
+        });
+        sel.appendChild(og);
+      });
+    }
+
+    function apply(d,b,u){
+      ensureLoaded(d); ensureLoaded(b); ensureLoaded(u);
+      selD.value=d; selB.value=b; selU.value=u;
+      root.style.setProperty('--font-display', stackOf(d));
+      root.style.setProperty('--font-body',    stackOf(b));
+      root.style.setProperty('--font-ui',      stackOf(u));
+      cur.innerHTML='Selection — display: <code>'+d+'</code> · body: <code>'+b+'</code> · ui: <code>'+u+'</code>';
+    }
+
+    fill(selD); fill(selB); fill(selU);
+    selD.onchange=selB.onchange=selU.onchange=function(){ apply(selD.value,selB.value,selU.value); };
+
+    var pw=document.getElementById('fp-presets');
+    PRESETS.forEach(function(p){
+      var btn=document.createElement('button'); btn.textContent=p[0];
+      btn.onclick=function(){ apply(p[1],p[2],p[3]); };
+      pw.appendChild(btn);
+    });
+
+    apply(PRESETS[0][1],PRESETS[0][2],PRESETS[0][3]); // default = Editorial Warm
+  </script>
+</body>
+</html>

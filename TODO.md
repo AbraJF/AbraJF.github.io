@@ -9,3 +9,6 @@ Open work for the site, newest priorities first.
 - [ ] **Add animations / flair** — subtle motion and transitions to bring the
       page to life (e.g. on-scroll reveals, hover states). Must respect
       `prefers-reduced-motion: reduce` and degrade gracefully without JS.
+- [ ] **SEO** — meta tags (title, description), Open Graph / Twitter cards,
+      structured data (JSON-LD Person/ScholarlyArticle), sitemap.xml, robots.txt,
+      canonical URL, semantic headings.

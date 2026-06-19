@@ -4,9 +4,12 @@ A fast, dependency-free personal academic website for a PhD researcher who is al
 part-time AI & Innovation consultant/engineer. Plain HTML + CSS, deployed on
 [GitHub Pages](https://pages.github.com/). No build step, no frameworks.
 
-The look is an **editorial-sage** theme: serif display headings over sans-serif accents,
-a green/amber/orange/brown palette, diamond section dividers. Light by default, with a
-dark variant that activates automatically via `prefers-color-scheme`.
+The look is an **editorial-sage** theme: serif display headings (Newsreader) over a
+sans-serif body/UI (Inter), a green/amber/orange/brown palette, diamond section dividers.
+Light by default, with a dark variant that activates automatically via
+`prefers-color-scheme`. Fonts are **self-hosted** (no external request) and subtle motion
+(scroll reveals, hover states, an animated dependency-parse in the bio) degrades
+gracefully without JS and respects `prefers-reduced-motion`.
 
 ## Sections
 
@@ -42,6 +45,38 @@ Replace placeholders (`Your Name`, `[University]`, links, etc.).
 
 - `assets/img/bram.jpg` — portrait (square works best). The `<img>` hides itself if the file is missing.
 - `assets/files/cv.pdf` — **generated** from `data/cv.json` (see below), not hand-placed.
+
+## Typography (self-hosted fonts)
+
+Fonts ship as variable `woff2` files in `assets/fonts/`, declared in
+`assets/css/fonts.css` — no Google Fonts request, works offline, identical on every
+device. The live pairing is **Newsreader** (display) + **Inter** (body & UI).
+
+Re-skin the whole site by changing three variables in `assets/css/style.css` `:root`:
+
+```css
+--font-display:"Newsreader",var(--serif);  /* headings */
+--font-body:"Inter",var(--sans);           /* reading text */
+--font-ui:"Inter",var(--sans);             /* nav, tags, labels */
+```
+
+To browse other combinations, open **`examples/font-playground.html`** — a preview tool
+that loads ~24 families live from Google Fonts (preview only) with dropdowns and presets.
+Pick a pair, then self-host it: drop its `woff2` in `assets/fonts/`, add an `@font-face`
+block in `fonts.css`, and update the variables above.
+
+## Motion & animations
+
+All motion is progressive enhancement (see the
+[developer guide](docs/developer-guide.md#motion--animations)):
+
+- **Scroll reveals** + **hover states** — CSS transitions; JS only adds the hidden
+  start state, so without JS everything is visible.
+- **Animated dependency parse** — the bio opens with a sentence whose dependency arcs
+  (and a ROOT marker) draw in step by step via the Web Animations API, echoing the
+  thesis parse figures. JS measures word positions; `data-arcs` / `data-root` on the
+  `.depparse` element define the structure.
+- All of it is disabled under `prefers-reduced-motion: reduce`.
 
 ## CV (generated PDF)
 

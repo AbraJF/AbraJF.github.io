@@ -19,9 +19,13 @@ phd-website/
 ├── .nojekyll               # Tells GitHub Pages: serve files as-is, no Jekyll
 ├── assets/
 │   ├── css/style.css        # All styling; design tokens in :root
+│   ├── css/fonts.css        # @font-face for self-hosted webfonts
+│   ├── fonts/               # Variable woff2 (Newsreader, Inter), latin+latin-ext
 │   ├── img/bram.jpg         # Portrait (user-supplied; optional)
 │   └── files/cv.pdf         # CV PDF — GENERATED from data/cv.json
 ├── data/cv.json             # CV single source of truth
+├── examples/
+│   └── font-playground.html # Live font-pairing preview (Google Fonts CDN; dev only)
 ├── lib/                     # Pure logic (cv, cv-edit, site-edit, scholar)
 ├── scripts/build-cv.js      # cv.json → cv.pdf (puppeteer)
 ├── mcp/server.js            # MCP content-update server
@@ -55,10 +59,12 @@ phd-website/
 
 ## CSS conventions
 
-- Editorial-sage theme: serif display (`--serif`) for headings/body, sans-serif
-  (`--sans`) for nav, tags, labels and metadata.
-- All design tokens (palette, max width, surfaces, on-accent text, shadows) are CSS
-  custom properties under `:root` in `style.css`. Change the theme in one place.
+- Editorial-sage theme. Three font variables under `:root` drive all type:
+  `--font-display` (headings, nav brand, pub titles), `--font-body` (reading text),
+  `--font-ui` (nav, tags, labels, metadata). Each is a self-hosted webfont with a
+  system fallback (`--serif` / `--sans`). Live pairing: Newsreader + Inter.
+- All design tokens (palette, max width, surfaces, on-accent text, shadows, fonts) are
+  CSS custom properties under `:root` in `style.css`. Change the theme in one place.
 - Dark mode via `@media (prefers-color-scheme: dark)` — overrides **only** the `:root`
   tokens; every rule below references variables, so no rule is duplicated per mode.
 - End-of-section dividers are a pseudo-element diamond (`◆`) on a fading hairline
@@ -68,7 +74,40 @@ phd-website/
   row (styled scrollbar + CSS scroll-shadow edge fade for iOS).
 - BEM-ish flat class names (`.pub`, `.pub-title`, `.nav-links`). No nesting tools.
 
-## Adding a new section
+## Typography (self-hosted fonts)
+
+- `assets/css/fonts.css` holds the `@font-face` blocks. Each family is a **variable**
+  `woff2` (weight axis 400–700 in one file) with separate roman + italic files, each
+  split into `latin` + `latin-ext` subsets (the latter covers accented names like
+  "de Heer Kloots"). `font-display:swap`.
+- Linked **before** `style.css` in `index.html` so the faces are known when the
+  cascade resolves `--font-display` / `--font-body` / `--font-ui`.
+- To add a family: drop its `woff2` in `assets/fonts/`, copy a block in `fonts.css`,
+  then point a font variable at it. Files were pulled from the Google Fonts CSS API
+  (`css2` endpoint, latin/latin-ext woff2).
+- `examples/font-playground.html` is a **dev-only** preview that loads ~24 families
+  live from the Google Fonts CDN with dropdowns + presets — it is NOT shipped/linked by
+  the live site, which only ever self-hosts the chosen pair.
+
+## Motion & animations
+
+All motion is progressive enhancement, gated so the site is fully usable without JS and
+silent under `prefers-reduced-motion: reduce`. Logic lives in the inline `<script>` at
+the bottom of `index.html`; styles in the "Motion & flair" block of `style.css`.
+
+- **Hover** — pure CSS transitions (avatar scale, chip/button/icon lift, animated nav
+  underline). Disabled in the reduced-motion media query.
+- **Scroll reveals** — an `IntersectionObserver` adds `.is-visible` to tagged blocks.
+  The hidden start state lives behind a `.js-reveal` class added to `<html>` only when
+  JS runs **and** motion is allowed, so no-JS / reduced-motion users see content as-is.
+- **Animated dependency parse** (`buildDepParse()`) — the `.depparse` element carries
+  `data-arcs='[[head,dep,"Label"],…]'` and optional `data-root="<index>"` over its
+  `.w` word spans. JS measures word centres, builds an SVG overlay (curved arc paths,
+  arrowheads, label boxes), then plays a **sequential** draw via the Web Animations API
+  (one step per arc, ROOT first). Re-measures on resize and after `document.fonts.ready`.
+  Without JS only the plain sentence shows; under reduced motion the parse is painted to
+  its final state with no animation. (Note: CSS-transition draw-in was rejected — freshly
+  created SVG nodes have no committed start value to interpolate from; WAAPI avoids that.)
 
 1. Add a `<section id="newid" class="section">…</section>` in `index.html`.
 2. Add `<li><a href="#newid">Label</a></li>` to the nav.

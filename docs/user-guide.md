@@ -27,7 +27,12 @@ If the file is missing the page simply hides the image — nothing breaks.
 
 ## 3. Bio, social icons, and research interests
 
-- Edit the two bio paragraphs in the About section.
+- The About section opens with an **animated sentence** that draws grammar arcs over the
+  words. It lives in the `<div class="depparse">` block. To change the wording, edit the
+  words inside each `<span class="w">…</span>`. If you change the sentence, the arcs
+  (`data-arcs`) and root (`data-root`) need updating to match — ask a developer, or see
+  the developer guide. The sentence still reads normally if animations are off.
+- Edit the two bio paragraphs after it in the About section.
 - The round **social icons** under your name are a `<ul class="social-icons">` list —
   update each link's `href` (email, GitHub, Scholar, X, LinkedIn) or remove a `<li>`.
 - **Research interests** are chips: one `<li>` per interest inside
