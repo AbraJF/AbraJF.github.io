@@ -317,6 +317,32 @@ untouched. No GitHub Actions workflow is required for plain static files.
 Custom domain: add a `CNAME` file containing the domain, and configure DNS per GitHub's
 docs. Then set the domain under **Settings → Pages**.
 
+### Security posture
+
+The site is static, takes no user input, and loads zero third-party resources (scripts,
+styles, fonts, and images are all same-origin), which keeps the attack surface minimal.
+Hardening that ships in `index.html`:
+
+- **Content-Security-Policy** (`<meta http-equiv>`): `default-src 'self'` with
+  `connect-src 'none'`, `object-src 'none'`, `base-uri 'self'`, `form-action 'none'`.
+  `script-src`/`style-src` carry `'unsafe-inline'` — required by the two inline `<script>`
+  blocks, the `style="--c"` chip hooks, and the avatar `onerror`; with no user input there
+  is no injection vector for it to widen. Any *new* external resource (CDN, analytics,
+  embed) will be **blocked** until its origin is added to the relevant directive — add it
+  consciously, don't reflexively loosen to `*`.
+- **`referrer` = `strict-origin-when-cross-origin`** — outbound links leak only the origin.
+- All `target="_blank"` links carry `rel="noopener"` (no `window.opener` reverse-tab access).
+
+Header-only protections (`frame-ancestors`/`X-Frame-Options` anti-clickjacking, HSTS)
+**cannot** be set: GitHub Pages serves no custom response headers, and `<meta>` CSP ignores
+those directives. Acceptable for a content-only site with no auth/session/forms. A custom
+domain behind a CDN (e.g. Cloudflare) could add them later if needed.
+
+Verify after editing the head: serve locally (`python -m http.server`) and load the page in
+a browser with devtools open — a clean console means no CSP violations and no missing
+resources (the favicon is self-hosted at `assets/img/favicon.svg` to satisfy `img-src
+'self'`; a `data:` URI would be blocked).
+
 ## Roadmap ideas
 
 - Migrate to a Jekyll academic theme (al-folio) if publication count grows large and

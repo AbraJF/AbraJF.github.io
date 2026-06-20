@@ -4,6 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- Security hardening. GitHub Pages can't set HTTP response headers, so the
+       policy ships in <meta>; directives that are header-only (frame-ancestors,
+       X-Frame-Options, HSTS) can't be enforced here. Everything the page needs
+       is self-hosted, so the policy is tight: only same-origin scripts, styles,
+       fonts, and images load, and the page makes no network requests at all
+       (connect-src 'none'). 'unsafe-inline' is required for the two inline
+       <script> blocks, inline style="--c" hooks, and the avatar onerror handler;
+       the site takes no user input, so there is no XSS vector for it to widen. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'none'; form-action 'none'; upgrade-insecure-requests" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+  <!-- Self-hosted favicon (an SVG monogram) — kept same-origin so it passes the
+       img-src 'self' policy above; a data: URI would be blocked. theme-color
+       tints the mobile browser chrome to the site's green. -->
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#1f4a2c" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#15291c" media="(prefers-color-scheme: dark)" />
+
   <title>Bram Fresen — PhD Researcher, NeuroAI</title>
 
   <meta name="description" content="Abraham Jacob (Bram) Fresen — PhD researcher at the Language and Predictive Computation Group, Max Planck Institute for Psycholinguistics, Nijmegen. Part-time AI & Innovation consultant at ClickValue." />
