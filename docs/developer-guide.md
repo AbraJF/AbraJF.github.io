@@ -116,23 +116,51 @@ the bottom of `index.html`; styles in the "Motion & flair" block of `style.css`.
   scrolls into view, and exposes playback controls. The real bio is a separate, always-in-DOM
   `<p class="about-bio">` below the band (not the captions), so no-JS / reduced-motion /
   crawlers always get the full text. Full spec + beat script: `docs/research-arc-animation-plan.md`.
-  Build is **phased** — beats 1–5 are live; the legacy four-beat dep-parse engine (arcs, ROOT,
-  scissors, WAAPI) is parked in git commit `6c9a5ca` to be ported back in at the syntax beat.
+  All **10 beats** are live. The legacy four-beat dep-parse engine (arcs, ROOT, WAAPI) from git
+  commit `6c9a5ca` was **ported back in** as beat 7 and rebuilt onto the beat timeline
+  (`buildSyntax`, below); beats 8–10 add the open question, causal erasure, and the resolve.
 
   Structure (inside `.arc-stage`, which is `aria-hidden`):
   - `.arc-stage` is bottom-aligned (`justify-content:flex-end`) and **reserved at the tallest
     figure's height** (a fixed `min-height`, 208px desktop / 170px mobile — the measured beat-5
     max). So the figure grows *upward* into the spare space as icons/RDMs/chips appear, its
-    bottom edge stays put, and the caption below never jumps between beats.
+    bottom edge stays put, and the caption below never jumps between beats. To stop the *glyphs*
+    themselves drifting, the RDM `.arc-pattern` boxes and the `.arc-concepts` row are **space-
+    reserved (`visibility:hidden`) from `data-seen~="3"`** — so the glyph row jumps up once, with
+    the brain's entrance, then holds its position through beats 3–6; the cells/chips merely fill
+    in (`visible` + scale/fan-in) at `3r`/`5` without lifting the glyphs. Beat 7 is the one
+  deliberate exception (the parse grows the figure downward) — but its layout changes (chips
+  collapse, parse reserved via `prepareSyntax`) are all triggered at **beat-7 start**
+  (`data-beat="7"`), not on the "syntax" word, so the caption drops once cleanly instead of
+  flashing high then jumping down mid-line.
   - `.arc-figure` > `.arc-row` — the glyph row: `.arc-col-lm` and `.arc-col-brain`
     (each a `currentColor` inline-SVG `.arc-glyph` + `.arc-glyph-label` + an RDM
-    `.arc-pattern`), with `.arc-rel` (the `≈`/`similar`, and a `?`) centred between them.
+    `.arc-pattern`), with `.arc-rel` (the `≈`/`similar`, a `?`, and the beat-6
+    `drives?` arrow) centred between them. `.arc-rel` is **fixed-width** and reserved
+    the moment the brain joins (`data-seen~="3"`), so swapping its inner content
+    across beats 3–6 never reflows the row — the glyphs lock in place from beat 3.
   - `.arc-pattern` — a 4×4 representational-dissimilarity matrix of `.arc-cell` cells.
     Value classes `v0`–`v3` set warm/red intensity (diagonal = `v3`, same stimulus); the
     brain's differing off-diagonal cells carry `.d` (a green ring) for "similar, not identical".
     Cells are real markup so they survive no-JS; JS only staggers their reveal.
   - `.arc-concepts` — the concept chips (`.arc-concept`, Semantics/Syntax/Pragmatics) that
     fan in at the concepts beat; `.arc-magnifier` is the badge on the LM glyph.
+  - `.arc-drive` (inside `.arc-rel`) — beat 6: the brain returns to focus and the link
+    resolves from "≈ similar" into a directed "→ drives?" arrow (does accurate concept
+    representation *drive* the model's brain prediction — the open question).
+  - `.arc-syntax` > `.depparse` — beat 7: a dependency parse of a probe sentence ("I saw the
+    man with the telescope"). Plain text in the DOM; the engine overlays an SVG of labelled
+    arcs. It plants the classic PP-attachment mistake — the model hangs "with the telescope"
+    on the verb (`obl`, the `data-wrong` arc), which is **drawn, marked ✗ + struck red**, then
+    **corrected** onto the noun (`nmod`, the final `data-arcs` entry, drawn in green).
+    `data-arcs` = `[head, dep, label]` indices over the `.w` words; `data-root` is the root word.
+  - `.arc-scissors` (on the LM glyph, like `.arc-magnifier`) — beat 9: snips the model
+    (causal erasure). Together with the parse-arc fade and the brain-RDM degrade it is a
+    **one-shot keyed off `data-beat="9"`** (the *current* beat, not cumulative `data-seen`), so
+    it clears itself at beat 10. Beats: 8 re-lights the brain + a pulsing `?` (open question,
+    parse stays); 9 runs the erasure (scissors / `.dep-svg` fades / a few brain `.arc-cell`s
+    shift intensity — degrade, not blank); 10 hides the parse and restores `≈ similar`, calm,
+    settling to the LM ≈ brain through-line before `.about-bio`.
   - `.arc-beats` — one `<p class="arc-beat" data-beat="N">` per beat; JS crossfades one at a
     time (`.is-active`). Beats 2+ reveal **word by word**: `splitNode()` wraps each word in an
     `.arc-word` span (recursing into `<strong>`/`<em>`), held at `opacity:0` until `.is-on`.
@@ -150,7 +178,8 @@ the bottom of `index.html`; styles in the "Motion & flair" block of `style.css`.
   the full set used to rebuild past beats' state. So "why" → question pivot and "concepts" →
   chips fire mid-line, while **beat 3 is staged in three**: the brain column joins on "human
   brain" (`3`), then the two RDMs + the "≈ similar" relation land together at end-of-line (`3r`)
-  and linger. `WORD_STEP` is the per-word gap, `PAUSE` the caret "think"
+  and linger; "drives" (`6`) brings the brain back, "syntax" (`7`) reveals the parse and calls
+  `buildSyntax()`. `WORD_STEP` is the per-word gap, `PAUSE` the caret "think"
   before streaming, `TOKEN_STEP` the per-token gap, and `data-dwell` (else `DEFAULT_HOLD`) the
   hold *after* a line finishes revealing. Every reveal loop polls a `paused` flag, so hover /
   keyboard-focus freezes mid-reveal and resumes cleanly; a dot click stops autoplay and jumps;
@@ -160,6 +189,24 @@ the bottom of `index.html`; styles in the "Motion & flair" block of `style.css`.
   by the engine. Without JS — or under reduced motion — `.js-arc` is never added: the band shows
   its static figure, the beats read as a short intro paragraph, controls stay hidden, and
   `.about-bio` carries the meaning.
+
+  **Beat 7's dep-parse** splits into reserve-then-draw. `.arc-syntax` is shown the moment beat 7
+  starts (`data-beat="7"`), and `setBeat` calls **`prepareSyntax()`** → `layoutSyntax()`: it reserves
+  padding for the tallest arc, measures each `.w` centre, and builds the SVG **hidden** (`curve`/
+  `arrow`/`label` builders; each element stashes a `_delay`; `getBoundingClientRect` forces a sync
+  layout, so no rAF). That reserves the parse's full height up front, so the caption is at its final
+  position before the words reveal. The word "syntax" then calls **`drawSyntax()`** → `playSyntax()`,
+  which animates the staggered draw-in via the Web Animations API (stroke-dashoffset + opacity):
+  structural arcs first, then the `data-wrong` arc, then (after a delay) `markWrong()` recolours it +
+  strikes the label + shows the ✗, then the corrected arc draws. All labels (and the ✗) are built
+  into a `.dep-labels` group appended **last**, so every label box paints in front of every arc /
+  arrowhead — a later-drawn arc can't slice through an earlier label. Dot-jumps use **`snapSyntaxNow()`**
+  → `snapSyntax()` (lay out if needed, then jump to the final state). `resetSyntax()` tears the SVG down so Replay re-animates it —
+  but `setBeat` only calls it when entering at/before the syntax beat (`i <= idx7`), so forward
+  auto-advance into beats 8–9 keeps the drawn parse on screen. Because the parse is large, **beat 7 grows the figure downward** below the
+  reserved `min-height` (the only beat that does) — a deliberate "the parse unfurls" reveal rather
+  than a layout bug. Reduced motion never reaches `buildSyntax` (the engine returns before adding
+  `.js-arc`), leaving just the plain sentence.
 
 1. Add a `<section id="newid" class="section">…</section>` in `index.html`.
 2. Add `<li><a href="#newid">Label</a></li>` to the nav.

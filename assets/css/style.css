@@ -242,7 +242,10 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
 
 /* The ≈ relation, vertically centred on the pattern row (its height matches the
    patterns, pinned to the bottom of the columns where the patterns sit). */
-.arc-rel{align-self:flex-end;height:60px;display:flex;flex-direction:column;
+/* Fixed width so swapping the inner content (≈ similar → ? → drives?) never
+   reflows the row — the LM and brain glyphs hold their position from beat 3
+   through beat 6. */
+.arc-rel{align-self:flex-end;width:74px;height:60px;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:.15rem;color:var(--muted)}
 .arc-approx{font-family:var(--font-display);font-size:1.5rem;line-height:1;color:var(--accent)}
 .arc-rel-label{font-family:var(--font-ui);font-size:.58rem;font-weight:700;
@@ -289,7 +292,14 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
 .js-arc .arc-col-brain,
 .js-arc .arc-rel{display:none}
 .js-arc .arc-stage[data-seen~="3"] .arc-col-brain{display:flex;animation:arc-fadein .55s ease both}
-.js-arc .arc-stage[data-seen~="3r"] .arc-rel{display:flex;animation:arc-fadein .55s ease both}
+/* The relation slot is reserved (fixed width) the moment the brain joins at "3",
+   so both columns settle into their final positions immediately; its ≈ + label
+   then fade in at end-of-line "3r" without nudging the glyphs. */
+.js-arc .arc-stage[data-seen~="3"] .arc-rel{display:flex}
+.js-arc .arc-approx,
+.js-arc .arc-rel-label{visibility:hidden}
+.js-arc .arc-stage[data-seen~="3r"] .arc-approx{visibility:visible}
+.js-arc .arc-stage[data-seen~="3r"] .arc-rel-label{visibility:visible;animation:arc-fadein .55s ease both}
 
 /* Labels are display:none (no reserved space) until the brain joins at "3", so the
    caption hugs the lone glyph in beats 1–2 instead of sitting below empty labels. */
@@ -300,7 +310,11 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
    are set by the engine so the LM grid fills first, then the brain grid. Opacity
    stays at each cell's value. */
 .js-arc .arc-pattern{display:none}
-.js-arc .arc-stage[data-seen~="3r"] .arc-pattern{display:grid}
+/* Reserve the RDM box the moment the brain joins ("3") — cells hidden — so the
+   glyphs rise to their final height once, with the brain's entrance. The cells
+   then pop in (scale) at end-of-line "3r" without nudging the glyphs upward. */
+.js-arc .arc-stage[data-seen~="3"] .arc-pattern{display:grid;visibility:hidden}
+.js-arc .arc-stage[data-seen~="3r"] .arc-pattern{visibility:visible}
 .js-arc .arc-cell{transform:scale(0);transition:transform .3s ease}
 .js-arc .arc-stage[data-seen~="3r"] .arc-cell{transform:scale(1)}
 
@@ -327,7 +341,12 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
    with a magnifier, and the concept chips fan in. The ? is dropped. */
 .js-arc .arc-magnifier{opacity:0;transform:scale(.6);
   transition:opacity .4s ease,transform .4s ease}
+/* Reserve the concept-chip row from when the brain joins ("3"), chips hidden, so
+   the glyph row holds its height through beats 3–5; the chips then fan in
+   (visible) at beat 5 without lifting the glyphs. */
 .js-arc .arc-concepts{display:none}
+.js-arc .arc-stage[data-seen~="3"] .arc-concepts{display:flex;visibility:hidden}
+.js-arc .arc-stage[data-seen~="5"] .arc-concepts{visibility:visible}
 .js-arc .arc-stage[data-seen~="5"] .arc-q{display:none}
 .js-arc .arc-stage[data-seen~="5"] .arc-col-brain,
 .js-arc .arc-stage[data-seen~="5"] .arc-rel{opacity:.18;transition:opacity .6s ease}
@@ -338,6 +357,127 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
 .js-arc .arc-stage[data-seen~="5"] .arc-concept{
   animation:arc-chipin .4s ease both;animation-delay:calc(var(--c) * .12s)}
 @keyframes arc-chipin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* Beat 6 — accuracy & whether the concepts drive the brain prediction. The brain
+   returns to full focus (undoing beat 5's dim) and the concept chips stay (now
+   "measured" for accuracy); the link resolves from "≈ similar" into a directed,
+   still-open "drives?" arrow. Rules sit after beat 5 so they win on source order. */
+.arc-drive{display:none;flex-direction:column;align-items:center;gap:.05rem;color:var(--accent)}
+.arc-drive-arrow{font-family:var(--font-display);font-size:1.5rem;line-height:1}
+.arc-drive-label{font-family:var(--font-ui);font-size:.56rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em}
+.js-arc .arc-drive{display:none}
+.js-arc .arc-stage[data-seen~="6"] .arc-col-brain,
+.js-arc .arc-stage[data-seen~="6"] .arc-rel{opacity:1}
+.js-arc .arc-stage[data-seen~="6"] .arc-pattern,
+.js-arc .arc-stage[data-seen~="6"] .arc-glyph-label{opacity:1}
+.js-arc .arc-stage[data-seen~="6"] .arc-approx,
+.js-arc .arc-stage[data-seen~="6"] .arc-rel-label,
+.js-arc .arc-stage[data-seen~="6"] .arc-q,
+.js-arc .arc-stage[data-seen~="6"] .arc-magnifier{display:none}
+.js-arc .arc-stage[data-seen~="6"] .arc-drive{display:flex;animation:arc-fadein .55s ease both}
+.js-arc .arc-stage[data-seen~="6"] .arc-drive-arrow{animation:arc-pulse 1.9s ease-in-out infinite}
+
+/* Beat 7 — the syntax probe. The concept chips, brain side, and link recede; the
+   LM re-centres and a dependency parse flows out beneath it. The parse SVG is
+   built + drawn by the engine (buildSyntax in index.html); without JS / under
+   reduced motion only the plain sentence shows. */
+.arc-syntax{margin-top:.1rem;width:100%;display:flex;justify-content:center}
+/* Shown the moment beat 7 starts (data-beat="7"), so prepareSyntax can reserve its
+   full height before the words reveal; kept on screen through beats 8–9 via seen. */
+.js-arc .arc-syntax{display:none}
+.js-arc .arc-stage[data-beat="7"] .arc-syntax,
+.js-arc .arc-stage[data-seen~="7"] .arc-syntax{display:flex;animation:arc-fadein .5s ease both}
+/* The chips + drive arrow recede and the brain dims — keyed to beat-7 *start*
+   (data-beat="7") as well as seen, so the figure settles to its final height the
+   moment beat 7 begins (not on the "syntax" word, which would shrink it mid-line
+   and lift the caption); seen~"7" then holds that state through beats 8–9. The
+   brain stays (dimmed) so the glyph row keeps its position — it re-lights at
+   beat 8 rather than jumping back in. */
+.js-arc .arc-stage[data-beat="7"] .arc-concepts,
+.js-arc .arc-stage[data-seen~="7"] .arc-concepts,
+.js-arc .arc-stage[data-beat="7"] .arc-drive,
+.js-arc .arc-stage[data-seen~="7"] .arc-drive{display:none}
+.js-arc .arc-stage[data-beat="7"] .arc-col-brain,
+.js-arc .arc-stage[data-seen~="7"] .arc-col-brain,
+.js-arc .arc-stage[data-beat="7"] .arc-rel,
+.js-arc .arc-stage[data-seen~="7"] .arc-rel{opacity:.2;transition:opacity .6s ease}
+
+/* Dependency-parse overlay (beat 7), ported from the parked engine (git 6c9a5ca).
+   The SVG is positioned + measured by buildSyntax; the initial hidden state is set
+   inline and the staggered draw-in runs via the Web Animations API. */
+.arc-syntax .depparse{position:relative;display:inline-block;margin:0 auto;
+  overflow-x:auto;overflow-y:hidden;max-width:100%}
+.arc-syntax .sentence{display:flex;flex-wrap:nowrap;gap:.42em;align-items:flex-end;
+  font-family:var(--font-display);font-size:clamp(1.1rem,3.4vw,1.45rem);
+  line-height:1.25;color:var(--green);width:max-content;max-width:100%}
+.arc-syntax .w{position:relative;white-space:nowrap}
+.dep-svg{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+.dep-arc{fill:none;stroke:var(--brown);stroke-width:1.6}
+.dep-head{fill:var(--brown)}
+.dep-labelbox{fill:var(--card);stroke:var(--border);stroke-width:1}
+.dep-label{fill:var(--accent);font-family:var(--font-ui);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.03em}
+/* The model's mistaken attachment, once marked: warm-red arc + struck label + ✗.
+   (Colour only — the inline strokeDasharray drives the reveal, so don't override it.) */
+.dep-arc.dep-wrong.is-marked{stroke:var(--orange)}
+.dep-head.dep-wrong.is-marked{fill:var(--orange)}
+.dep-labelg.dep-wrong.is-marked .dep-labelbox{stroke:var(--orange)}
+.dep-labelg.dep-wrong.is-marked .dep-label{fill:var(--orange);text-decoration:line-through}
+.dep-x{fill:var(--orange);font-family:var(--font-ui);font-size:14px;font-weight:700}
+/* The corrected attachment, drawn after the error is marked. */
+.dep-arc.dep-fix{stroke:var(--green)}
+.dep-head.dep-fix{fill:var(--green)}
+.dep-labelg.dep-fix .dep-label{fill:var(--green)}
+
+/* Beat 8 — the open question: the brain re-lights to full focus and a pulsing "?"
+   sits in the relation slot ("do models with better syntax predict the brain
+   better?"). The parse (beat 7) stays on screen. */
+.js-arc .arc-stage[data-seen~="8"] .arc-col-brain,
+.js-arc .arc-stage[data-seen~="8"] .arc-rel{opacity:1}
+.js-arc .arc-stage[data-seen~="8"] .arc-q{display:block;
+  animation:arc-qpulse 1.7s ease-in-out infinite}
+
+/* Beat 9 — causal erasure (one-shot, keyed off the *current* beat so it clears
+   itself at beat 10). Scissors snip the model, the dependency arcs fade out, and
+   the brain RDM partially scrambles — the prediction degrades, it does not vanish. */
+.arc-scissors{position:absolute;top:-10px;left:-16px;width:24px;height:24px;
+  display:flex;align-items:center;justify-content:center;color:var(--orange);
+  opacity:0;transform:scale(.5) rotate(-12deg)}
+.arc-scissors svg{width:20px;height:20px}
+.js-arc .arc-stage[data-beat="9"] .arc-scissors{animation:arc-snip .9s ease both}
+@keyframes arc-snip{
+  0%{opacity:0;transform:scale(.5) rotate(-24deg)}
+  30%{opacity:1;transform:scale(1) rotate(-12deg)}
+  45%{transform:scale(1) rotate(2deg)}
+  60%{transform:scale(1) rotate(-12deg)}
+  100%{opacity:1;transform:scale(1) rotate(-12deg)}}
+/* The syntax representation is cut: the arc overlay fades, the sentence remains. */
+.js-arc .arc-stage[data-beat="9"] .arc-syntax .dep-svg{opacity:.12;
+  transition:opacity .9s ease .35s}
+.js-arc .arc-stage[data-beat="9"] .arc-syntax .sentence{opacity:.45;
+  transition:opacity .9s ease .35s}
+/* Brain RDM degrades: a handful of cells shift intensity, breaking the visible
+   similarity with the model (partial, not blank). */
+.js-arc .arc-stage[data-beat="9"] .arc-pattern[data-pat="brain"] .arc-cell{
+  transition:opacity .7s ease .3s}
+.js-arc .arc-stage[data-beat="9"] .arc-pattern[data-pat="brain"] .arc-cell:nth-child(2){opacity:.7}
+.js-arc .arc-stage[data-beat="9"] .arc-pattern[data-pat="brain"] .arc-cell:nth-child(4){opacity:1}
+.js-arc .arc-stage[data-beat="9"] .arc-pattern[data-pat="brain"] .arc-cell:nth-child(6){opacity:.16}
+.js-arc .arc-stage[data-beat="9"] .arc-pattern[data-pat="brain"] .arc-cell:nth-child(9){opacity:.7}
+.js-arc .arc-stage[data-beat="9"] .arc-pattern[data-pat="brain"] .arc-cell:nth-child(11){opacity:.16}
+.js-arc .arc-stage[data-beat="9"] .arc-pattern[data-pat="brain"] .arc-cell:nth-child(14){opacity:.7}
+.js-arc .arc-stage[data-beat="9"] .arc-pattern[data-pat="brain"] .arc-cell:nth-child(16){opacity:.42}
+
+/* Beat 10 — resolve. The parse + scissors + "?" clear and the figure settles to
+   its through-line at rest: model ≈ brain. The ≈/"similar" relation is restored,
+   calm (no pulse). The real bio (.about-bio) carries on below. */
+.js-arc .arc-stage[data-seen~="10"] .arc-syntax{display:none}
+.js-arc .arc-stage[data-seen~="10"] .arc-q{display:none}
+.js-arc .arc-stage[data-seen~="10"] .arc-concepts{display:none}
+.js-arc .arc-stage[data-seen~="10"] .arc-approx{display:block;visibility:visible;
+  opacity:.7;animation:none}
+.js-arc .arc-stage[data-seen~="10"] .arc-rel-label{display:block;visibility:visible}
 
 /* Beat 2 enacts prediction: "…good at pred" lands first with a blinking caret
    that holds while the model "thinks"; then the model generates the completion
@@ -383,7 +523,7 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
   .arc-pattern{width:46px;height:46px;gap:2px}
   .arc-col{width:46px;gap:.5rem}
   .arc-glyph-label{font-size:.52rem;letter-spacing:.04em}
-  .arc-rel{height:46px}
+  .arc-rel{width:58px;height:46px}
   .arc-approx{font-size:1.2rem}
   .arc-q{font-size:2rem}
   .arc-concepts{gap:.35rem}

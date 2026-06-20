@@ -4,9 +4,12 @@ A scrollytelling hero for the About section that walks a visitor through the PhD
 central question, then resolves into the static bio. This document is the spec to
 work from after the conversation context is cleared.
 
-> **Status:** planning. Supersedes the current four-beat `.research-arc` figure
-> (`index.html` + the `.research-arc` IIFE). That engine — the dependency-parse
-> drawer, glyphs, scissors — is **reused**, not thrown away.
+> **Status:** built — all 10 beats are live (autoplay-on-view + controls; see §4).
+> The dependency-parse engine from git `6c9a5ca` was ported in as beat 7
+> (`buildSyntax`); beats 8–10 add the open question, causal erasure (scissors /
+> arcs fade / brain RDM degrades), and the resolve to the LM ≈ brain through-line
+> before the bio. Remaining: optional timing/whitespace polish. The glyphs, link,
+> and dep-parse drawer are **reused**, not thrown away.
 
 ---
 

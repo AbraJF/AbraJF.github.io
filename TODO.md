@@ -2,7 +2,7 @@
 
 Open work for the site, newest priorities first.
 
-- [ ] **Research-arc animation** — multi-beat narrative of the PhD's through-line
+- [x] **Research-arc animation** — multi-beat narrative of the PhD's through-line
       (LM predicts language → predicts the brain → why? → concepts → syntax →
       causal erasure → bio). Full spec + beat script in
       `docs/research-arc-animation-plan.md`. Bio stays in DOM (`.about-bio`);
@@ -10,11 +10,16 @@ Open work for the site, newest priorities first.
       - **Decided:** autoplay-on-view + controls (dots, replay, pause-on-hover) —
         scroll-driven scrollytelling was built and rejected (felt like broken
         scrolling). Provider names cut entirely.
-      - **Done:** beats 1–5 (LM glyph → token-streamed prediction → brain + RDM
-        heatmaps linked by ≈ → "why?" → concepts/magnifier + chips).
-      - **Next:** beat 6 (accurate/drives-prediction), beat 7 (syntax dep-parse —
-        port the parked engine from git `6c9a5ca`), beats 8–10 (probe / causal
-        erasure), resolve to bio + polish.
+      - **Done (all 10 beats):** 1–2 LM glyph → token-streamed prediction; 3 brain
+        + RDM heatmaps linked by ≈; 4 "why?"; 5 concepts/magnifier + chips; 6 brain
+        returns with a "drives?" arrow; 7 syntax dependency-parse (ported from git
+        `6c9a5ca` as `buildSyntax`) with a marked attachment error + correction;
+        8 open question (brain re-lights + pulsing "?"); 9 causal erasure (scissors
+        snip the LM, parse arcs fade, brain RDM partially degrades); 10 resolves to
+        the LM ≈ brain through-line, then the bio. Glyph row is position-locked from
+        beat 3 (RDM/chip space reserved; fixed-width relation slot).
+      - **Polish (optional, later):** timing pass over the full 10-beat run; the
+        reserved whitespace at beat 3 (pre-RDM) could be tightened.
 - [x] **Arc caption spacing** — increased the gap between the caption and the
       figure (static `.arc-beats` margin-top → .95rem; `.js-arc .arc-beats`
       margin-top 0 → .85rem).
