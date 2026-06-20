@@ -448,8 +448,12 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
 /* Dependency-parse overlay (beat 7), ported from the parked engine (git 6c9a5ca).
    The SVG is positioned + measured by buildSyntax; the initial hidden state is set
    inline and the staggered draw-in runs via the Web Animations API. */
+/* Horizontal padding so the edge arcs/labels (e.g. the leftmost "nsubj" between the
+   first two words) have room — without it they sit at x≈0 and overflow-x:auto clips
+   their left side, most visibly on narrow phones. layoutSyntax() only sets paddingTop/
+   Bottom inline, so these left/right values survive and shift the word centres inward. */
 .arc-syntax .depparse{position:relative;display:inline-block;margin:0 auto;
-  overflow-x:auto;overflow-y:hidden;max-width:100%}
+  overflow-x:auto;overflow-y:hidden;max-width:100%;padding-left:1.5em;padding-right:1.5em}
 .arc-syntax .sentence{display:flex;flex-wrap:nowrap;gap:.42em;align-items:flex-end;
   font-family:var(--font-display);font-size:clamp(1.1rem,3.4vw,1.45rem);
   line-height:1.25;color:var(--green);width:max-content;max-width:100%}
