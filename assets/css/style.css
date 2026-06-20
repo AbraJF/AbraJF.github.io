@@ -174,7 +174,12 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
 .hero-intro{gap:.3rem}
 .hero-intro p.intro-line{font-family:var(--font-body);font-size:clamp(1.1rem,2.7vw,1.4rem);
   color:var(--muted);max-width:34rem;line-height:1.5;margin-left:auto;margin-right:auto}
-.hero-intro .intro-line a{color:var(--green);font-weight:600}
+/* No underline on intro links: the line is split into per-word .arc-word spans, but
+   the spaces between them stay as plain text nodes — an underline would show on those
+   (and so on the link) before the words type in. Colour + weight mark the link; the
+   underline returns on hover. */
+.hero-intro .intro-line a{color:var(--green);font-weight:600;text-decoration:none}
+.hero-intro .intro-line a:hover{text-decoration:underline}
 
 /* The avatar fades in immediately; the socials are held until the engine adds
    .is-shown (once the intro has finished typing) so they don't sit under half-typed

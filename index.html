@@ -1025,10 +1025,17 @@
       });
 
       // Once the narrative has run its course, ease the visitor down to the bio.
+      // Gate on position, not userScrolled: a single wheel nudge during the
+      // ~minute-long arc would otherwise disable this for good. Only pull down if the
+      // visitor is still up at the animation (the bio is still well below the fold);
+      // if they've already scrolled to the content themselves, leave them be.
       function scrollToBio() {
-        if (skipped || userScrolled) return;
+        if (skipped) return;
         var bio = document.getElementById('bio');
-        if (bio) bio.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (!bio) return;
+        if (bio.getBoundingClientRect().top > window.innerHeight * 0.5) {
+          bio.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
 
       // Reveal the socials once the intro has finished (kept hidden so they don't sit
