@@ -136,6 +136,11 @@ the bottom of `index.html`; styles in the "Motion & flair" block of `style.css`.
     (`userScrolled`, also true when deep-linked below the top).
   - **Skip.** `.skip-anim` (shown from the start) sets `skipped`, stops the engine, and
     jumps to `#bio` — the static bio, the first thing below the hero.
+  - **Bio handoff.** After the **last** beat lingers `BIO_DWELL` (~3.5s), `scrollToBio()`
+    eases the page down to `#bio`, completing the guided journey. Both auto-scrolls bail
+    if the visitor has taken over: `userScrolled` is set by real input (`wheel`/`touchmove`/
+    `keydown`), **not** the `scroll` event, so the engine's own programmatic scrolls don't
+    count as the visitor grabbing the wheel.
   - **No-JS / reduced motion.** `.js-arc` is never added: the intro lines show as a
     static paragraph, no typing, no auto-scroll, the hero is not height-pinned
     (`min-height:0` in the reduced-motion block), and `.skip-anim` is hidden. The bio

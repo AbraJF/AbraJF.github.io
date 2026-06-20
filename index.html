@@ -540,7 +540,7 @@
       var TOKEN_STEP = 180;   // ms between generated tokens in the prediction
       var DEFAULT_HOLD = 1500;// ms a beat is held after it finishes revealing
       var active = -1, seqTimer = null, typeTimer = null, tokTimer = null,
-          paused = false, finished = false;
+          endTimer = null, paused = false, finished = false;
 
       document.documentElement.classList.add('js-arc');
 
@@ -638,7 +638,7 @@
         });
       });
 
-      function clearSeq() { clearTimeout(seqTimer); clearTimeout(typeTimer); clearTimeout(tokTimer); }
+      function clearSeq() { clearTimeout(seqTimer); clearTimeout(typeTimer); clearTimeout(tokTimer); clearTimeout(endTimer); }
 
       // Add seen tokens to the cumulative "seen" list (idempotent). The list drives
       // which figure elements are revealed, via CSS [data-seen~="TOKEN"].
@@ -786,7 +786,9 @@
             addSeenTokens(cfgOf(i).end);
             seqTimer = window.setTimeout(function adv() {
               if (paused) { seqTimer = window.setTimeout(adv, 90); return; }
-              if (active >= n - 1) { finished = true; return; }
+              // Last beat: let it linger a few seconds, then hand the visitor off to
+              // the bio with a gentle scroll (skipped if they've taken over).
+              if (active >= n - 1) { finished = true; endTimer = window.setTimeout(scrollToBio, BIO_DWELL); return; }
               play(active + 1);
             }, holdOf(i));
           }, cfgOf(i).endDelay || 0);
@@ -1012,10 +1014,22 @@
       var INTRO_LINE_HOLD = 480;// ms pause between intro lines
       var INTRO_END_HOLD = 650; // ms the finished intro lingers before the scroll
       var SCROLL_SETTLE = 700;  // ms after the auto-scroll before the narrative starts
+      var BIO_DWELL = 3500;     // ms the last beat lingers before scrolling on to the bio
       var skipped = false, started = false;
       // Don't yank the page if the visitor has taken over (or deep-linked below the top).
+      // Detect real intent (wheel / touch / keys) rather than the `scroll` event, so our
+      // own programmatic auto-scrolls don't count as the visitor taking control.
       var userScrolled = window.scrollY > 60;
-      window.addEventListener('scroll', function () { userScrolled = true; }, { passive: true });
+      ['wheel', 'touchmove', 'keydown'].forEach(function (ev) {
+        window.addEventListener(ev, function () { userScrolled = true; }, { passive: true });
+      });
+
+      // Once the narrative has run its course, ease the visitor down to the bio.
+      function scrollToBio() {
+        if (skipped || userScrolled) return;
+        var bio = document.getElementById('bio');
+        if (bio) bio.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
 
       // Reveal the socials once the intro has finished (kept hidden so they don't sit
       // under empty space while the name is still typing).
