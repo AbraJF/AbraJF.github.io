@@ -161,34 +161,36 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
   transition:opacity .6s ease,transform .6s ease;transition-delay:var(--reveal-delay,0ms)}
 .js-reveal .reveal.is-visible{opacity:1;transform:none}
 
-/* ---- Hero: one-view framing + intro reveal ----------------- */
-/* Under the arc engine (.js-arc) on a roomy viewport, pin the hero to one screen
-   and centre it, so the whole animation is bounded to the first view and the visitor
-   sees it is an animation from the first frame. The gate (min-height) only fires where
-   the content actually fits — shorter screens, mobile, no-JS and reduced motion all
-   fall back to natural flow. svh avoids the mobile URL-bar jump. */
-@media (min-width:760px) and (min-height:1030px){
-  .js-arc .hero{min-height:100vh;min-height:100svh;justify-content:center;
-    padding-top:4rem;margin-bottom:0}
-}
+/* ---- Hero: animated intro (screen 1) ----------------------- */
+/* Under the engine the hero is one full screen: the visitor lands on the typed
+   intro, then the page auto-scrolls down to the arc (screen 2). Pinning the hero to
+   one viewport keeps the arc below the fold so that scroll reads as a reveal. The
+   intro words are wrapped in .arc-word (hidden until .is-on — see the arc-word rule
+   below) and revealed one at a time by the engine. No-JS / reduced motion: natural
+   flow, static text, no auto-scroll, no skip button. svh avoids the URL-bar jump. */
+.js-arc .hero{min-height:100vh;min-height:100svh;justify-content:center;
+  padding-top:4rem;margin-bottom:0}
+.intro-line{margin:.18rem 0}
+.hero-intro{gap:.3rem}
+.hero-intro p.intro-line{font-family:var(--font-body);font-size:clamp(1.1rem,2.7vw,1.4rem);
+  color:var(--muted);max-width:34rem;line-height:1.5;margin-left:auto;margin-right:auto}
+.hero-intro .intro-line a{color:var(--green);font-weight:600}
 
-/* The identity animates in (staggered) the moment .js-arc lands; the engine then holds
-   the narrative back by INTRO_MS so the name settles before the story starts. */
+/* The avatar fades in immediately; the socials are held until the engine adds
+   .is-shown (once the intro has finished typing) so they don't sit under half-typed
+   lines. The skip button is shown from the start so the visitor can always bail. */
 .js-arc .avatar{opacity:0;animation:hero-rise .6s ease .05s both}
-.js-arc .hero-greeting{opacity:0;animation:hero-rise .6s ease .18s both}
-.js-arc .hero-intro h1{opacity:0;animation:hero-rise .6s ease .32s both}
-.js-arc .hero-intro .tagline{opacity:0;animation:hero-rise .6s ease .5s both}
-.js-arc .hero-intro .tagline + .tagline{animation-delay:.62s}
-.js-arc .social-icons{opacity:0;animation:hero-rise .6s ease .8s both}
+.js-arc .social-icons{opacity:0}
+.js-arc .social-icons.is-shown{animation:hero-rise .6s ease both}
 @keyframes hero-rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
-/* Skip cue: a soft, gently bobbing chevron at the foot of the hero. JS-only (it only
-   makes sense when the hero is height-forced and there's an animation to skip). */
-.scroll-cue{display:none}
-.js-arc .scroll-cue{display:inline-flex;margin-top:.4rem;color:var(--muted);
-  border-radius:50%;animation:cue-bob 1.8s ease-in-out infinite}
-.scroll-cue:hover{color:var(--accent)}
-@keyframes cue-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+.skip-anim{display:none}
+.js-arc .skip-anim{display:inline-flex;align-items:center;gap:.3rem;margin-top:.5rem;
+  padding:.32rem .85rem;border:1px solid var(--border);border-radius:999px;background:none;
+  cursor:pointer;font-family:var(--font-ui);font-size:.72rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
+  opacity:0;animation:hero-rise .6s ease .3s both}
+.skip-anim:hover{color:var(--accent);border-color:var(--accent)}
 
 /* ---- Animated dependency parse (bio opener) ----------------
    A showcase sentence with labelled dependency arcs that draw
@@ -575,8 +577,8 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
   /* The arc engine bails out under reduced motion (never adds .js-arc), but
      guard the static state anyway: everything visible, nothing animating. */
   .arc-glyph,.arc-pred,.arc-beat,
-  .avatar,.hero-greeting,.hero-intro h1,.hero-intro .tagline,.social-icons{
+  .avatar,.intro-line,.intro-line .arc-word,.social-icons{
     opacity:1;transform:none;transition:none;animation:none}
   .hero{min-height:0}              /* never force one-view height */
-  .scroll-cue{display:none}        /* no skip cue when the hero just flows */
+  .skip-anim{display:none}         /* nothing to skip when the hero just flows */
 }

@@ -133,11 +133,15 @@
           alt="Portrait of Bram Fresen"
           onerror="this.style.display='none'"
         />
+        <!-- Intro lines: the arc engine types these in word by word (each line's
+             words are wrapped in .arc-word and revealed one at a time), then the
+             page auto-scrolls down to the arc below. Without the engine (no-JS /
+             reduced motion) they read as a normal static intro. The <h1> is the
+             page's single heading; the affiliation link stays live inside the line. -->
         <div class="hero-intro">
-          <p class="hero-greeting">Hi — I'm</p>
-          <h1>Abraham Jacob Fresen <span class="nickname">(Bram)</span></h1>
-          <p class="tagline">PhD Researcher · <a href="https://lpc-lab.github.io/" target="_blank" rel="noopener">Language and Predictive Computation Group</a>, <a href="https://www.mpi.nl/" target="_blank" rel="noopener">Max Planck Institute for Psycholinguistics</a>, Nijmegen</p>
-          <p class="tagline">Part-time AI &amp; Innovation Consultant · <a href="https://clickvalue.nl/" target="_blank" rel="noopener">ClickValue</a></p>
+          <h1 class="intro-line">Hi — I'm Abraham Jacob Fresen <span class="nickname">(Bram)</span>.</h1>
+          <p class="intro-line">I'm a PhD researcher at the <a href="https://www.mpi.nl/" target="_blank" rel="noopener">Max Planck Institute for Psycholinguistics</a>.</p>
+          <p class="intro-line">I study how language models predict language — and the brain.</p>
         </div>
 
         <ul class="social-icons" aria-label="Contact and profiles">
@@ -168,18 +172,22 @@
           </li>
         </ul>
 
-        <!-- Research arc: a hero band that walks a visitor through the PhD's
-             central question, then hands off to the static bio below. The figure
-             sits in normal page flow (no scroll hijack). When the band scrolls
-             into view the arc engine plays the beats once on a timer; dots + a
-             replay control let the visitor re-watch or jump, and hovering pauses
-             it. The real bio lives in .about-bio below, always in the DOM — so
-             no-JS, reduced-motion and crawlers get the full text with zero
-             animation, and the band degrades to a static figure + intro lines.
-             Build is phased (see docs/research-arc-animation-plan.md); the legacy
-             four-beat dep-parse engine is parked in git commit 6c9a5ca for reuse
-             at the syntax beat. -->
-        <div class="research-arc" role="group" aria-label="How language models predict language">
+        <!-- Skip the whole animation and jump straight to the bio. JS-only: the
+             engine wires the click and reveals it; hidden without the engine. -->
+        <button type="button" class="skip-anim">Skip intro ↓</button>
+      </div><!-- /.hero -->
+
+      <!-- Research arc (screen 2): once the intro above has typed in, the engine
+           auto-scrolls the page down to here, then walks a visitor through the PhD's
+           central question before handing off to the static bio below. The figure
+           sits in normal page flow (no scroll hijack). dots + a replay control let
+           the visitor re-watch or jump, and hovering pauses it. The real bio lives in
+           .about-bio below, always in the DOM — so no-JS, reduced-motion and crawlers
+           get the full text with zero animation, and the band degrades to a static
+           figure + intro lines. Build is phased (see
+           docs/research-arc-animation-plan.md); the legacy four-beat dep-parse engine
+           is parked in git commit 6c9a5ca for reuse at the syntax beat. -->
+      <div class="research-arc" role="group" aria-label="How language models predict language">
           <div class="arc-stage" data-seen="" data-beat="" aria-hidden="true">
             <div class="arc-figure">
               <!-- Beats 1–2: just the language-model column (centred). Beat 3: the
@@ -296,16 +304,8 @@
           </div>
         </div><!-- /.research-arc -->
 
-        <!-- Skip-the-intro affordance: a chevron that scrolls to the bio below. Shown
-             only under .js-arc (when the hero is height-forced and there's an animation
-             to skip); harmless and hidden otherwise. -->
-        <a class="scroll-cue" href="#bio" aria-label="Skip the intro and read on">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-        </a>
-      </div><!-- /.hero -->
-
       <!-- The real research bio. Always present, never JS-dependent. The #bio id is the
-           scroll-cue target. -->
+           skip-button target. -->
       <p id="bio" class="about-bio">
           Language models don't just predict language — they also <strong>predict how
           the human brain responds</strong> to it. <em>Why?</em> That is the question my
@@ -609,6 +609,12 @@
         if (bi > 0) splitNode(beat, units, (BEATS_CFG[beat.getAttribute('data-beat')] || {}).word || {});
         return units;
       });
+
+      // Intro lines (screen 1) get the same word-by-word treatment, split up front so
+      // their words start hidden (no flash). They accumulate (each line stays once
+      // revealed) rather than crossfading like the arc beats.
+      var introLineEls = Array.prototype.slice.call(document.querySelectorAll('.hero-intro .intro-line'));
+      var introUnits = introLineEls.map(function (l) { var u = []; splitNode(l, u, {}); return u; });
 
       // One dot per beat: progress indicator + jump target. Clicking jumps to that
       // beat's finished state and stops autoplay.
@@ -996,32 +1002,73 @@
 
       if (replay) replay.addEventListener('click', function () { play(0); });
 
-      // The hero intro (greeting + name + taglines) animates in via CSS the moment
-      // .js-arc is added; hold the narrative back by INTRO_MS so the identity lands
-      // first and the arc figure stays blank until the story begins. Replay calls
-      // play(0) directly (no delay) — the intro has already shown.
-      var INTRO_MS = 1200;
+      // ---- Intro → auto-scroll → arc orchestration -----------------------
+      // On load the intro lines type in word by word (screen 1). When they finish,
+      // the page smoothly scrolls down to the arc (screen 2) and the narrative plays.
+      // This makes it obvious from the first frame that the page is animating, inviting
+      // the visitor to watch rather than scroll. A Skip button (and any manual scroll)
+      // bails out gracefully.
+      var INTRO_WORD = 105;     // ms per intro word
+      var INTRO_LINE_HOLD = 480;// ms pause between intro lines
+      var INTRO_END_HOLD = 650; // ms the finished intro lingers before the scroll
+      var SCROLL_SETTLE = 700;  // ms after the auto-scroll before the narrative starts
+      var skipped = false, started = false;
+      // Don't yank the page if the visitor has taken over (or deep-linked below the top).
+      var userScrolled = window.scrollY > 60;
+      window.addEventListener('scroll', function () { userScrolled = true; }, { passive: true });
 
-      // Start once the band scrolls into view (fall back to immediate play). The
-      // figure/beats are left unset until begin(), so nothing shows under the intro.
-      var started = false;
-      function begin() {
-        if (started) return; started = true;
-        window.setTimeout(function () { play(0); }, INTRO_MS);
+      // Reveal the socials once the intro has finished (kept hidden so they don't sit
+      // under empty space while the name is still typing).
+      function revealAfterIntro() {
+        var s = document.querySelector('.hero .social-icons');
+        if (s) s.classList.add('is-shown');
       }
-      if ('IntersectionObserver' in window) {
-        // The band is the hero — on screen at load — so start as soon as any of it is
-        // visible (after the intro defer). If the page is opened deep-linked to a lower
-        // section, it simply waits until the hero is scrolled back into view.
-        var io = new IntersectionObserver(function (es) {
-          es.forEach(function (e) {
-            if (e.isIntersecting) { begin(); io.disconnect(); }
-          });
-        }, { threshold: 0.1 });
-        io.observe(arc);
-      } else {
-        begin();
+
+      function playIntro(done) {
+        var li = 0;
+        (function line() {
+          if (skipped) return;
+          if (li >= introLineEls.length) { done(); return; }
+          var units = introUnits[li], wi = 0;
+          (function word() {
+            if (skipped) return;
+            if (paused) { window.setTimeout(word, 90); return; }
+            if (wi < units.length) {
+              units[wi++].el.classList.add('is-on');
+              window.setTimeout(word, INTRO_WORD);
+              return;
+            }
+            li++;
+            window.setTimeout(line, INTRO_LINE_HOLD);
+          })();
+        })();
       }
+
+      function toArc() {
+        if (skipped) return;
+        revealAfterIntro();
+        window.setTimeout(function () {
+          if (skipped) return;
+          if (!userScrolled) {
+            // Centre the figure itself (not the whole band) so the reserved stage's
+            // spare space doesn't dominate the landing frame.
+            var focus = arc.querySelector('.arc-figure') || arc;
+            focus.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          window.setTimeout(function () { if (!skipped) play(0); }, SCROLL_SETTLE);
+        }, INTRO_END_HOLD);
+      }
+
+      // Skip: stop everything and jump straight to the bio.
+      var skipBtn = document.querySelector('.skip-anim');
+      if (skipBtn) skipBtn.addEventListener('click', function () {
+        skipped = true; clearSeq(); stop();
+        var bio = document.getElementById('bio');
+        if (bio) bio.scrollIntoView({ block: 'start' });
+      });
+
+      // Kick the whole sequence off on load (the intro is at the top of the page).
+      if (!started) { started = true; playIntro(toArc); }
     })();
   </script>
 </body>

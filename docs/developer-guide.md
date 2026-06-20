@@ -120,26 +120,26 @@ the bottom of `index.html`; styles in the "Motion & flair" block of `style.css`.
   commit `6c9a5ca` was **ported back in** as beat 7 and rebuilt onto the beat timeline
   (`buildSyntax`, below); beats 8–10 add the open question, causal erasure, and the resolve.
 
-  **Hero framing (one view).** The arc lives inside `.hero` — the whole first screen,
-  a centred flex column of `avatar → .hero-intro (greeting + the page's single `<h1>` +
-  taglines) → .research-arc → social-icons → .scroll-cue`. Goals: make it obvious from
-  the first frame that an animation is happening, bound it to one view so nothing animates
-  off-screen, and let the visitor scroll past to skip.
-  - **Identity animates in, then the story.** Under `.js-arc` the intro (`.hero-greeting`,
-    `h1`, `.tagline`, avatar, socials) is hidden and fades/rises in on a staggered
-    `hero-rise` keyframe; the engine then holds the narrative back by `INTRO_MS` (~1.2s,
-    in `begin()`) so the name lands before beat 1. Replay restarts only the narrative.
-  - **Autoplay on load.** The band is the hero, on-screen at load, so the IntersectionObserver
-    now fires `begin()` as soon as any part is visible (`threshold:0.1`) — not the old
-    "whole band on screen" test, which couldn't be met once the band exceeded the viewport.
-  - **Forced one view, where it fits.** `@media (min-width:760px) and (min-height:1030px)`
-    pins `.js-arc .hero` to `100svh` and centres it — the gate is set just above the
-    forced content height (~1025px incl. the header-clearing `padding-top`) so it can never
-    overflow-while-pinned. Below the gate (the common case) the hero **flows** at its
-    natural ~961px, which still fits one screen on a standard desktop and scrolls on
-    laptops/phones (the user-chosen "flow" behaviour). No-JS and reduced motion also flow;
-    reduced motion additionally zeroes the forced height, shows everything, and hides the
-    `.scroll-cue`.
+  **Hero (screen 1) → auto-scroll → arc (screen 2).** The first screen is `.hero` — a
+  centred column of `avatar → .hero-intro (typed lines) → social-icons → .skip-anim`,
+  pinned to `100svh` so the arc starts below the fold. The purpose is to signal *instantly*
+  that the page is animating, so the visitor watches rather than scrolls past.
+  - **Typed intro.** `.hero-intro` holds three `.intro-line`s — an `<h1>` ("Hi — I'm …",
+    the page's single heading) and two `<p>`s ("I'm a PhD researcher …", "I study …").
+    They are split into `.arc-word`s up front (`introUnits`, reusing `splitNode`) so the
+    words start hidden, then `playIntro()` reveals them one at a time, lines accumulating
+    (not crossfading like the arc beats). `INTRO_WORD` / `INTRO_LINE_HOLD` set the pace.
+  - **Auto-scroll handoff.** When the last word lands, `toArc()` reveals the socials
+    (`.is-shown`), then smooth-scrolls the **`.arc-figure`** to viewport centre (focusing
+    the figure, not the reserved-tall band) and starts the narrative (`play(0)`) after
+    `SCROLL_SETTLE`. It bails if `skipped` or if the visitor has already scrolled
+    (`userScrolled`, also true when deep-linked below the top).
+  - **Skip.** `.skip-anim` (shown from the start) sets `skipped`, stops the engine, and
+    jumps to `#bio` — the static bio, the first thing below the hero.
+  - **No-JS / reduced motion.** `.js-arc` is never added: the intro lines show as a
+    static paragraph, no typing, no auto-scroll, the hero is not height-pinned
+    (`min-height:0` in the reduced-motion block), and `.skip-anim` is hidden. The bio
+    below carries the meaning. The single `<h1>` keeps SEO/structure intact in all modes.
   - The static bio (`#bio .about-bio`), consulting blurb, and interests sit **below** the
     hero; `#bio` is the `.scroll-cue` target.
 
