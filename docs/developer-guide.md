@@ -120,18 +120,44 @@ the bottom of `index.html`; styles in the "Motion & flair" block of `style.css`.
   commit `6c9a5ca` was **ported back in** as beat 7 and rebuilt onto the beat timeline
   (`buildSyntax`, below); beats 8–10 add the open question, causal erasure, and the resolve.
 
+  **Hero framing (one view).** The arc lives inside `.hero` — the whole first screen,
+  a centred flex column of `avatar → .hero-intro (greeting + the page's single `<h1>` +
+  taglines) → .research-arc → social-icons → .scroll-cue`. Goals: make it obvious from
+  the first frame that an animation is happening, bound it to one view so nothing animates
+  off-screen, and let the visitor scroll past to skip.
+  - **Identity animates in, then the story.** Under `.js-arc` the intro (`.hero-greeting`,
+    `h1`, `.tagline`, avatar, socials) is hidden and fades/rises in on a staggered
+    `hero-rise` keyframe; the engine then holds the narrative back by `INTRO_MS` (~1.2s,
+    in `begin()`) so the name lands before beat 1. Replay restarts only the narrative.
+  - **Autoplay on load.** The band is the hero, on-screen at load, so the IntersectionObserver
+    now fires `begin()` as soon as any part is visible (`threshold:0.1`) — not the old
+    "whole band on screen" test, which couldn't be met once the band exceeded the viewport.
+  - **Forced one view, where it fits.** `@media (min-width:760px) and (min-height:1030px)`
+    pins `.js-arc .hero` to `100svh` and centres it — the gate is set just above the
+    forced content height (~1025px incl. the header-clearing `padding-top`) so it can never
+    overflow-while-pinned. Below the gate (the common case) the hero **flows** at its
+    natural ~961px, which still fits one screen on a standard desktop and scrolls on
+    laptops/phones (the user-chosen "flow" behaviour). No-JS and reduced motion also flow;
+    reduced motion additionally zeroes the forced height, shows everything, and hides the
+    `.scroll-cue`.
+  - The static bio (`#bio .about-bio`), consulting blurb, and interests sit **below** the
+    hero; `#bio` is the `.scroll-cue` target.
+
   Structure (inside `.arc-stage`, which is `aria-hidden`):
-  - `.arc-stage` is bottom-aligned (`justify-content:flex-end`) and **reserved at the tallest
-    figure's height** (a fixed `min-height`, 208px desktop / 170px mobile — the measured beat-5
-    max). So the figure grows *upward* into the spare space as icons/RDMs/chips appear, its
-    bottom edge stays put, and the caption below never jumps between beats. To stop the *glyphs*
+  - `.arc-stage` is centred (`justify-content:center`) and **reserved at the tallest
+    figure's height** — that of **beat 7** (a fixed `min-height`, 352px desktop / 312px
+    mobile, covering the dependency parse). Because the reserved height already covers the
+    tallest beat, the stage never grows, so the caption, dots, and Replay button below it
+    **never move between beats** (previously the stage was sized to the beat-5 figure and
+    grew ~140px at beat 7, shoving the lower stack down — that was the controls-drift /
+    beat-7-caption-off-screen bug). In the sparse early beats the small figure sits centred
+    with whitespace above and below that blends into the hero. To stop the *glyphs*
     themselves drifting, the RDM `.arc-pattern` boxes and the `.arc-concepts` row are **space-
-    reserved (`visibility:hidden`) from `data-seen~="3"`** — so the glyph row jumps up once, with
+    reserved (`visibility:hidden`) from `data-seen~="3"`** — so the glyph row settles once, with
     the brain's entrance, then holds its position through beats 3–6; the cells/chips merely fill
-    in (`visible` + scale/fan-in) at `3r`/`5` without lifting the glyphs. Beat 7 is the one
-  deliberate exception (the parse grows the figure downward) — but its layout changes (chips
-  collapse, parse reserved via `prepareSyntax`) are all triggered at **beat-7 start**
-  (`data-beat="7"`), not on the "syntax" word, so the caption drops once cleanly instead of
+    in (`visible` + scale/fan-in) at `3r`/`5` without lifting the glyphs. Beat 7's parse
+  (chips collapse, parse reserved via `prepareSyntax`) is triggered at **beat-7 start**
+  (`data-beat="7"`), not on the "syntax" word, so the figure settles once cleanly instead of
   flashing high then jumping down mid-line.
   - `.arc-figure` > `.arc-row` — the glyph row: `.arc-col-lm` and `.arc-col-brain`
     (each a `currentColor` inline-SVG `.arc-glyph` + `.arc-glyph-label` + an RDM

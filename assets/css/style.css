@@ -67,9 +67,13 @@ a{color:var(--accent)}
 a:hover{color:var(--orange)}
 main a:hover,.tagline a:hover{text-decoration:underline}
 p{font-size:1.08rem}
-.hero-top{display:flex;gap:1.8rem;align-items:center;flex-wrap:wrap;margin-bottom:1.4rem}
-.hero-head{flex:1;min-width:240px}
-.avatar{width:150px;height:150px;border-radius:50%;object-fit:cover;border:4px solid var(--card);box-shadow:0 6px 20px var(--shadow)}
+/* Hero — the whole first screen: a centred column of avatar → identity → arc →
+   socials → skip cue. Forced to one viewport under the arc engine on roomy screens
+   (see the .js-arc rule in the Motion block); otherwise it flows at natural height. */
+.hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:.8rem;margin-bottom:1.4rem}
+.hero-intro{display:flex;flex-direction:column;align-items:center;gap:.05rem;max-width:42rem}
+.hero-greeting{font-family:var(--font-ui);text-transform:uppercase;letter-spacing:.14em;font-size:.8rem;font-weight:700;color:var(--muted);margin:0}
+.avatar{width:92px;height:92px;border-radius:50%;object-fit:cover;border:4px solid var(--card);box-shadow:0 6px 20px var(--shadow)}
 .tagline{font-family:var(--font-ui);color:var(--muted);font-size:.98rem;margin:.2rem 0}
 .tagline a{color:var(--green);font-weight:600}
 .social-icons{list-style:none;padding:0;margin:.7rem 0 0;display:flex;gap:.7rem}
@@ -109,7 +113,7 @@ p{font-size:1.08rem}
 .links{font-family:var(--font-ui);display:flex;flex-wrap:wrap;gap:.7rem 1.5rem}
 .site-footer{font-family:var(--font-ui);max-width:var(--max-width);margin:0 auto;padding:2rem 1rem 3rem;color:var(--muted)}
 .site-footer p{font-size:.75rem;font-style:italic;margin:0}
-@media(max-width:480px){h1{font-size:2.5rem}.hero-top{flex-direction:column;text-align:center}.social-icons{justify-content:center}.news{grid-template-columns:1fr;gap:.2rem}}
+@media(max-width:480px){h1{font-size:2.5rem}.social-icons{justify-content:center}.news{grid-template-columns:1fr;gap:.2rem}}
 /* Mobile nav: stack brand over a full-width, horizontally scrollable link row.
    Styled scrollbar (Android/desktop) + CSS scroll-shadow edge fade (iOS, where the
    overlay scrollbar is hidden) both signal there is more to scroll. */
@@ -157,6 +161,35 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
   transition:opacity .6s ease,transform .6s ease;transition-delay:var(--reveal-delay,0ms)}
 .js-reveal .reveal.is-visible{opacity:1;transform:none}
 
+/* ---- Hero: one-view framing + intro reveal ----------------- */
+/* Under the arc engine (.js-arc) on a roomy viewport, pin the hero to one screen
+   and centre it, so the whole animation is bounded to the first view and the visitor
+   sees it is an animation from the first frame. The gate (min-height) only fires where
+   the content actually fits — shorter screens, mobile, no-JS and reduced motion all
+   fall back to natural flow. svh avoids the mobile URL-bar jump. */
+@media (min-width:760px) and (min-height:1030px){
+  .js-arc .hero{min-height:100vh;min-height:100svh;justify-content:center;
+    padding-top:4rem;margin-bottom:0}
+}
+
+/* The identity animates in (staggered) the moment .js-arc lands; the engine then holds
+   the narrative back by INTRO_MS so the name settles before the story starts. */
+.js-arc .avatar{opacity:0;animation:hero-rise .6s ease .05s both}
+.js-arc .hero-greeting{opacity:0;animation:hero-rise .6s ease .18s both}
+.js-arc .hero-intro h1{opacity:0;animation:hero-rise .6s ease .32s both}
+.js-arc .hero-intro .tagline{opacity:0;animation:hero-rise .6s ease .5s both}
+.js-arc .hero-intro .tagline + .tagline{animation-delay:.62s}
+.js-arc .social-icons{opacity:0;animation:hero-rise .6s ease .8s both}
+@keyframes hero-rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* Skip cue: a soft, gently bobbing chevron at the foot of the hero. JS-only (it only
+   makes sense when the hero is height-forced and there's an animation to skip). */
+.scroll-cue{display:none}
+.js-arc .scroll-cue{display:inline-flex;margin-top:.4rem;color:var(--muted);
+  border-radius:50%;animation:cue-bob 1.8s ease-in-out infinite}
+.scroll-cue:hover{color:var(--accent)}
+@keyframes cue-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+
 /* ---- Animated dependency parse (bio opener) ----------------
    A showcase sentence with labelled dependency arcs that draw
    themselves in, echoing the parse figures from the thesis.
@@ -191,13 +224,15 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
 .research-arc{position:relative;margin:.6rem 0 1.6rem}
 
 /* The figure stage. Bottom-aligned (justify-content:flex-end) and reserved at the
-   *tallest* figure's height, so the figure grows upward into the spare space above
-   (which blends into the hero whitespace) and its bottom edge — and therefore the
-   caption below — never moves as icons/RDMs/chips appear. Reserved heights are the
-   measured max figure (beat 5: row + concept chips) plus a small buffer; the mobile
-   override below matches the smaller mobile figure. */
-.arc-stage{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-  min-height:208px}
+   *tallest* figure's height — that of beat 7, whose dependency parse unfurls below the
+   glyph row — so the figure grows upward into the spare space above (which blends into
+   the hero whitespace) and its bottom edge, the caption, the dots, and the Replay
+   button below it NEVER move as beats change. (Previously the stage was sized to the
+   beat-5 figure and grew ~140px at beat 7, shoving the whole lower stack down — which
+   pushed the beat-7 caption off-screen.) The mobile override below matches the smaller
+   mobile figure. */
+.arc-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:352px}
 /* The figure stacks the glyph row above the concept chips (beat 5). */
 .arc-figure{position:relative;display:flex;flex-direction:column;align-items:center;
   gap:1.1rem;width:100%;max-width:520px;text-align:center}
@@ -517,7 +552,7 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
 
 /* Mobile: keep LM ≈ brain side by side, scaled down to fit without colliding. */
 @media(max-width:560px){
-  .arc-stage{min-height:170px}   /* matches the smaller mobile figure (measured max ~164) */
+  .arc-stage{min-height:312px}   /* reserves the beat-7 parse height so nothing below shifts */
   .arc-row{gap:.7rem}
   .arc-glyph svg{width:42px;height:42px}
   .arc-pattern{width:46px;height:46px;gap:2px}
@@ -539,6 +574,9 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
   .js-reveal .reveal{opacity:1;transform:none;transition:none}
   /* The arc engine bails out under reduced motion (never adds .js-arc), but
      guard the static state anyway: everything visible, nothing animating. */
-  .arc-glyph,.arc-pred,.arc-beat{
+  .arc-glyph,.arc-pred,.arc-beat,
+  .avatar,.hero-greeting,.hero-intro h1,.hero-intro .tagline,.social-icons{
     opacity:1;transform:none;transition:none;animation:none}
+  .hero{min-height:0}              /* never force one-view height */
+  .scroll-cue{display:none}        /* no skip cue when the hero just flows */
 }

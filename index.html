@@ -121,17 +121,24 @@
 
     <!-- ===================== ABOUT / BIO ===================== -->
     <section id="about" class="section">
-      <div class="hero-top">
-      <img
-        class="avatar"
-        src="assets/img/bram.jpg"
-        alt="Portrait of Bram Fresen"
-        onerror="this.style.display='none'"
-      />
-      <div class="hero-head">
-        <h1>Abraham Jacob Fresen <span class="nickname">(Bram)</span></h1>
-        <p class="tagline">PhD Researcher · <a href="https://lpc-lab.github.io/" target="_blank" rel="noopener">Language and Predictive Computation Group</a>, <a href="https://www.mpi.nl/" target="_blank" rel="noopener">Max Planck Institute for Psycholinguistics</a>, Nijmegen</p>
-        <p class="tagline">Part-time AI &amp; Innovation Consultant · <a href="https://clickvalue.nl/" target="_blank" rel="noopener">ClickValue</a></p>
+      <!-- Hero: the whole first screen. Under the arc engine (.js-arc) it is forced to
+           one viewport on roomy screens and centred, so the animation is bounded to the
+           first view and nothing animates off-screen; on small/short screens, and with
+           no-JS / reduced motion, it falls back to natural document flow. The identity
+           (greeting + name + taglines) animates in first, then the research arc plays. -->
+      <div class="hero">
+        <img
+          class="avatar"
+          src="assets/img/bram.jpg"
+          alt="Portrait of Bram Fresen"
+          onerror="this.style.display='none'"
+        />
+        <div class="hero-intro">
+          <p class="hero-greeting">Hi — I'm</p>
+          <h1>Abraham Jacob Fresen <span class="nickname">(Bram)</span></h1>
+          <p class="tagline">PhD Researcher · <a href="https://lpc-lab.github.io/" target="_blank" rel="noopener">Language and Predictive Computation Group</a>, <a href="https://www.mpi.nl/" target="_blank" rel="noopener">Max Planck Institute for Psycholinguistics</a>, Nijmegen</p>
+          <p class="tagline">Part-time AI &amp; Innovation Consultant · <a href="https://clickvalue.nl/" target="_blank" rel="noopener">ClickValue</a></p>
+        </div>
 
         <ul class="social-icons" aria-label="Contact and profiles">
           <li>
@@ -160,8 +167,6 @@
             </a>
           </li>
         </ul>
-      </div><!-- /.hero-head -->
-      </div><!-- /.hero-top -->
 
         <!-- Research arc: a hero band that walks a visitor through the PhD's
              central question, then hands off to the static bio below. The figure
@@ -289,10 +294,19 @@
               <span>Replay</span>
             </button>
           </div>
-        </div>
+        </div><!-- /.research-arc -->
 
-        <!-- The real research bio. Always present, never JS-dependent. -->
-        <p class="about-bio">
+        <!-- Skip-the-intro affordance: a chevron that scrolls to the bio below. Shown
+             only under .js-arc (when the hero is height-forced and there's an animation
+             to skip); harmless and hidden otherwise. -->
+        <a class="scroll-cue" href="#bio" aria-label="Skip the intro and read on">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </a>
+      </div><!-- /.hero -->
+
+      <!-- The real research bio. Always present, never JS-dependent. The #bio id is the
+           scroll-cue target. -->
+      <p id="bio" class="about-bio">
           Language models don't just predict language — they also <strong>predict how
           the human brain responds</strong> to it. <em>Why?</em> That is the question my
           PhD asks. I probe which human-interpretable features (like <strong>syntax</strong>)
@@ -460,9 +474,11 @@
 
       document.documentElement.classList.add('js-reveal');
 
-      // Reveal these blocks; siblings in a group stagger slightly.
+      // Reveal these blocks; siblings in a group stagger slightly. The hero is
+      // intentionally absent: under the arc engine it has its own intro reveal
+      // (.js-arc), and it is on-screen at load anyway.
       var groups = [
-        ['.hero-top'], ['#about > p'], ['.interests'],
+        ['#about > p'], ['.interests'],
         ['#news .news'], ['#publications .pub'],
         ['#consulting > p', '#consulting h3', '#consulting .services'],
         ['#cv h3', '#cv .timeline li', '#cv .button']
@@ -980,27 +996,28 @@
 
       if (replay) replay.addEventListener('click', function () { play(0); });
 
-      // Start once the band scrolls into view (fall back to immediate play).
-      setBeat(0);
+      // The hero intro (greeting + name + taglines) animates in via CSS the moment
+      // .js-arc is added; hold the narrative back by INTRO_MS so the identity lands
+      // first and the arc figure stays blank until the story begins. Replay calls
+      // play(0) directly (no delay) — the intro has already shown.
+      var INTRO_MS = 1200;
+
+      // Start once the band scrolls into view (fall back to immediate play). The
+      // figure/beats are left unset until begin(), so nothing shows under the intro.
       var started = false;
-      function begin() { if (started) return; started = true; play(0); }
+      function begin() {
+        if (started) return; started = true;
+        window.setTimeout(function () { play(0); }, INTRO_MS);
+      }
       if ('IntersectionObserver' in window) {
-        // Hold off until the whole band is on-screen: fire only once its bottom
-        // edge has scrolled above the viewport bottom (or it fully covers the
-        // viewport, for short screens). Multiple thresholds keep the callback
-        // firing as the band scrolls up so we catch that moment.
+        // The band is the hero — on screen at load — so start as soon as any of it is
+        // visible (after the intro defer). If the page is opened deep-linked to a lower
+        // section, it simply waits until the hero is scrolled back into view.
         var io = new IntersectionObserver(function (es) {
           es.forEach(function (e) {
-            if (!e.isIntersecting) return;
-            var rb = e.rootBounds || { top: 0, bottom: window.innerHeight };
-            var r = e.boundingClientRect;
-            // Whole band on-screen (bottom edge above the viewport bottom), or —
-            // on a viewport too short to fit it — the band fully covering it.
-            if (r.bottom <= rb.bottom || (r.top <= rb.top && r.bottom >= rb.bottom)) {
-              begin(); io.disconnect();
-            }
+            if (e.isIntersecting) { begin(); io.disconnect(); }
           });
-        }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
+        }, { threshold: 0.1 });
         io.observe(arc);
       } else {
         begin();
