@@ -627,6 +627,49 @@
         stage.setAttribute('data-seen', cur.join(' '));
       }
 
+      // ---- FLIP morph between beats --------------------------------------
+      // Some beats reveal a figure element that *re-positions* glyphs already on
+      // screen (rather than only fading new ones in). For those, slide the moving
+      // glyphs from their old box to the new one (First/Last/Invert/Play) instead
+      // of letting them jump. Keyed by the seen-token whose reveal triggers the
+      // re-layout; the listed selectors are the elements that should glide.
+      // Beat 3 ("human brain"): the brain column + the reserved relation slot
+      // appear and push the lone, centred LM glyph left — morph glides the LM
+      // column into its two-column position as the brain fades in beside it.
+      // Only the live word-by-word reveal morphs (see playBeat); setBeat and
+      // dot-jumps set data-seen directly, so they snap to the final layout.
+      var FLIP_ON = { '3': ['.arc-col-lm'] };
+      var MORPH_MS = 520;
+      function morphSelsFor(seen) {
+        if (!seen) return null;
+        var out = [];
+        seen.forEach(function (t) { if (FLIP_ON[t]) out = out.concat(FLIP_ON[t]); });
+        return out.length ? out : null;
+      }
+      // Measure (First), apply the layout change (mutate → Last), then animate each
+      // moved element from old→new (Invert/Play). Elements that were hidden (zero
+      // width) are skipped — they keep their CSS fade-in. transform-only, so the
+      // slide runs on the compositor; the end state is the natural layout (no fill).
+      function flip(selectors, mutate) {
+        var els = [];
+        selectors.forEach(function (s) {
+          Array.prototype.push.apply(els, arc.querySelectorAll(s));
+        });
+        var first = els.map(function (e) { return e.getBoundingClientRect(); });
+        mutate();
+        els.forEach(function (e, k) {
+          var a = first[k];
+          if (!a.width) return;                       // was hidden → let CSS fade it in
+          var last = e.getBoundingClientRect();
+          var dx = a.left - last.left, dy = a.top - last.top;
+          if (!dx && !dy) return;                     // didn't actually move
+          e.animate(
+            [{ transform: 'translate(' + dx + 'px,' + dy + 'px)' }, { transform: 'none' }],
+            { duration: MORPH_MS, easing: 'cubic-bezier(.4,0,.2,1)' }
+          );
+        });
+      }
+
       // Reset to the start of beat i: figure shows everything from earlier beats,
       // the caption/prediction for beat i are hidden, ready to reveal. A beat with
       // a trigger word defers its own figure reveal until that word appears; beats
@@ -699,7 +742,11 @@
             var u = units[idx++];
             if (u.type === 'word') {
               u.el.classList.add('is-on');
-              addSeenTokens(u.seen);   // a synced word pulls in its figure element(s)
+              // a synced word pulls in its figure element(s); a re-layout token
+              // (e.g. beat 3) glides the displaced glyphs instead of jumping.
+              var msel = morphSelsFor(u.seen);
+              if (msel) flip(msel, function () { addSeenTokens(u.seen); });
+              else addSeenTokens(u.seen);
               if (u.seen && u.seen.indexOf('7') !== -1) drawSyntax();  // beat 7: animate the parse in
               seqTimer = window.setTimeout(step, stepOf(i));
             } else {

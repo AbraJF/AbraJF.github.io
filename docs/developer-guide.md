@@ -190,6 +190,22 @@ the bottom of `index.html`; styles in the "Motion & flair" block of `style.css`.
   its static figure, the beats read as a short intro paragraph, controls stay hidden, and
   `.about-bio` carries the meaning.
 
+  **Morph transitions (FLIP).** Most beats *fade* new figure parts in. A beat that
+  instead **re-positions a glyph already on screen** can glide it from old spot to new
+  with a FLIP (First/Last/Invert/Play) instead of letting it jump. The token-keyed
+  `FLIP_ON` map (`{ '3': ['.arc-col-lm'] }`) lists, per seen-token, the selectors to
+  morph when that token's reveal re-lays-out the figure; `flip(selectors, mutate)`
+  measures each element, applies `mutate()` (the `data-seen` change), then animates
+  old→new via a single `transform: translate(...)` keyframe (compositor-only, ~520ms,
+  `MORPH_MS`). Elements that were hidden (zero width) are skipped — they keep their CSS
+  fade-in. **Beat 3** is the wired case: revealing `3` ("human brain") brings in the
+  brain column + relation slot, pushing the lone, centred LM glyph up-and-left into its
+  two-column position — morph glides it there as the brain fades in beside it. Only the
+  **live word reveal** morphs (`playBeat` calls `flip` via `morphSelsFor`); `setBeat` and
+  dot-jumps set `data-seen` directly, so they snap. Reduced motion never reaches it (the
+  engine returns before `.js-arc`). To morph another beat, add its token + the moving
+  selector(s) to `FLIP_ON`.
+
   **Beat 7's dep-parse** splits into reserve-then-draw. `.arc-syntax` is shown the moment beat 7
   starts (`data-beat="7"`), and `setBeat` calls **`prepareSyntax()`** → `layoutSyntax()`: it reserves
   padding for the tallest arc, measures each `.w` centre, and builds the SVG **hidden** (`curve`/
