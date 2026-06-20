@@ -40,7 +40,12 @@
 }
 
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+/* scroll-padding-top offsets every in-page anchor jump by the sticky-header
+   height so section titles aren't hidden under the bar. Desktop header is a
+   single nav row (~3.5rem); the mobile nav stacks brand over a scrollable link
+   row (taller), so the offset grows below 560px. */
+html{scroll-behavior:smooth;scroll-padding-top:4.75rem}
+@media(max-width:560px){html{scroll-padding-top:6.75rem}}
 body{margin:0;background:var(--bg);color:var(--fg);line-height:1.65;font-family:var(--font-body)}
 .site-header{position:sticky;top:0;background:var(--header-bg);backdrop-filter:blur(6px);border-bottom:1px solid var(--border);z-index:10}
 .nav{max-width:var(--max-width);margin:0 auto;padding:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
@@ -185,12 +190,14 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
    engine in index.html and docs/research-arc-animation-plan.md. */
 .research-arc{position:relative;margin:.6rem 0 1.6rem}
 
-/* The figure stage. Bottom-aligned so the caption always hugs the figure (the
-   small early beats don't leave a gap below); spare height sits above, blending
-   into the hero whitespace. Min-height keeps the caption position roughly stable
-   across beats. */
+/* The figure stage. Bottom-aligned (justify-content:flex-end) and reserved at the
+   *tallest* figure's height, so the figure grows upward into the spare space above
+   (which blends into the hero whitespace) and its bottom edge — and therefore the
+   caption below — never moves as icons/RDMs/chips appear. Reserved heights are the
+   measured max figure (beat 5: row + concept chips) plus a small buffer; the mobile
+   override below matches the smaller mobile figure. */
 .arc-stage{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-  min-height:clamp(120px,18vh,164px)}
+  min-height:208px}
 /* The figure stacks the glyph row above the concept chips (beat 5). */
 .arc-figure{position:relative;display:flex;flex-direction:column;align-items:center;
   gap:1.1rem;width:100%;max-width:520px;text-align:center}
@@ -245,7 +252,7 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
 .arc-pred{color:var(--accent);font-weight:600}
 
 /* Narrative beat lines (static: stacked paragraph). */
-.arc-beats{margin:.6rem 0 0;text-align:center}
+.arc-beats{margin:.95rem 0 0;text-align:center}
 .arc-beat{margin:.2rem 0;font-family:var(--font-body);color:var(--fg);
   font-size:1.08rem;line-height:1.6}
 
@@ -255,40 +262,50 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
 /* ---- With the JS engine live (.js-arc) --------------------- */
 /* Beats stack in one place and crossfade — one shown at a time. */
 .js-arc .arc-beats{position:relative;display:grid;
-  min-height:3.4em;place-items:center;margin-top:0}
+  min-height:3.4em;place-items:center;margin-top:.85rem}
 .js-arc .arc-beat{grid-area:1/1;margin:0;max-width:30em;
   font-size:clamp(1.05rem,2.6vw,1.3rem);
   opacity:0;transform:translateY(8px);
   transition:opacity .5s ease,transform .5s ease}
 .js-arc .arc-beat.is-active{opacity:1;transform:none}
 
+/* Word-by-word reveal (beat 2 onward): words are wrapped in .arc-word spans by
+   the engine and held at opacity 0 — reserving their layout so the line never
+   reflows — then faded in one at a time as .is-on is added. */
+.js-arc .arc-word{opacity:0}
+.js-arc .arc-word.is-on{animation:arc-fadein .24s ease both}
+
 /* Figure elements start hidden; the cumulative data-seen list reveals them. */
 .js-arc .arc-glyph{opacity:0;transform:translateY(8px);
   transition:opacity .55s ease,transform .55s ease}
 .js-arc .arc-stage[data-seen~="1"] .arc-glyph{opacity:1;transform:none}
 
-/* Beat 3: the brain column, the ≈, the labels and the patterns all arrive.
-   Brain column + ≈ are out of flow until then, so the lone LM stays centred. */
+/* Beat 3 is staged in three (see BEATS_CFG in the arc engine):
+   - "3"  arrives on the words "human brain": the brain column joins the LM, and
+          both glyph labels appear to disambiguate the two;
+   - "3r" arrives at the end of the line: the two RDM patterns pop in and the
+          "≈ similar" relation lands between them, then the beat lingers.
+   Brain column + ≈ are out of flow until revealed, so the lone LM stays centred. */
 .js-arc .arc-col-brain,
 .js-arc .arc-rel{display:none}
-.js-arc .arc-stage[data-seen~="3"] .arc-col-brain,
-.js-arc .arc-stage[data-seen~="3"] .arc-rel{display:flex;animation:arc-fadein .55s ease both}
+.js-arc .arc-stage[data-seen~="3"] .arc-col-brain{display:flex;animation:arc-fadein .55s ease both}
+.js-arc .arc-stage[data-seen~="3r"] .arc-rel{display:flex;animation:arc-fadein .55s ease both}
 
-/* Labels + patterns are display:none (no reserved space) until beat 3, so the
-   caption hugs the lone glyph in beats 1–2 instead of sitting below an invisible
-   pattern grid. */
+/* Labels are display:none (no reserved space) until the brain joins at "3", so the
+   caption hugs the lone glyph in beats 1–2 instead of sitting below empty labels. */
 .js-arc .arc-glyph-label{display:none}
 .js-arc .arc-stage[data-seen~="3"] .arc-glyph-label{display:block;animation:arc-fadein .5s ease}
 
-/* Pattern cells pop in (scale); per-cell delays are set by the engine so the LM
-   grid fills first, then the brain grid. Opacity stays at each cell's value. */
+/* Pattern cells pop in (scale) only at the end-of-line "3r" stage; per-cell delays
+   are set by the engine so the LM grid fills first, then the brain grid. Opacity
+   stays at each cell's value. */
 .js-arc .arc-pattern{display:none}
-.js-arc .arc-stage[data-seen~="3"] .arc-pattern{display:grid}
+.js-arc .arc-stage[data-seen~="3r"] .arc-pattern{display:grid}
 .js-arc .arc-cell{transform:scale(0);transition:transform .3s ease}
-.js-arc .arc-stage[data-seen~="3"] .arc-cell{transform:scale(1)}
+.js-arc .arc-stage[data-seen~="3r"] .arc-cell{transform:scale(1)}
 
 /* The ≈ breathes once both patterns are up. */
-.js-arc .arc-stage[data-seen~="3"] .arc-approx{
+.js-arc .arc-stage[data-seen~="3r"] .arc-approx{
   animation:arc-pulse 1.9s ease-in-out infinite}
 @keyframes arc-pulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
 
@@ -331,7 +348,9 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
 .js-arc .arc-caret{display:inline-block;width:.55ch;height:1.05em;
   margin-left:.02em;vertical-align:-.16em;background:var(--accent);border-radius:1px;
   opacity:0}
-.js-arc .arc-beat.is-active:not(.is-typed) .arc-caret{
+/* Caret blinks only during the prediction phase (after the words land), not while
+   the earlier words of beat 2 are still revealing. */
+.js-arc .arc-beat.is-predicting:not(.is-typed) .arc-caret{
   animation:arc-blink .8s steps(1,end) infinite}
 .js-arc .arc-beat.is-typed .arc-caret{display:none}
 @keyframes arc-blink{0%,100%{opacity:1}50%{opacity:0}}
@@ -358,6 +377,7 @@ a,.nav-links a,.button,.chips li,.social-icons a,.tag{
 
 /* Mobile: keep LM ≈ brain side by side, scaled down to fit without colliding. */
 @media(max-width:560px){
+  .arc-stage{min-height:170px}   /* matches the smaller mobile figure (measured max ~164) */
   .arc-row{gap:.7rem}
   .arc-glyph svg{width:42px;height:42px}
   .arc-pattern{width:46px;height:46px;gap:2px}

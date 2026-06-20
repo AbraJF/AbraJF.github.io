@@ -15,20 +15,21 @@ Open work for the site, newest priorities first.
       - **Next:** beat 6 (accurate/drives-prediction), beat 7 (syntax dep-parse —
         port the parked engine from git `6c9a5ca`), beats 8–10 (probe / causal
         erasure), resolve to bio + polish.
-- [ ] **Arc caption spacing** — very slightly increase the distance between the
-      caption text and the icons/figure in the research-arc animation (currently
-      hugging a touch too tightly).
-- [ ] **Arc start trigger** — only begin playing the arc once the *bottom* of the
-      animation is in the viewport (so the whole figure is on-screen before it
-      starts), instead of the current 0.4 intersection threshold.
-- [ ] **Arc word-by-word reveal** — from beat 2 onward, let the caption words
-      appear one word at a time, and sync the matching icons/images to appear with
-      the right word (e.g. "human brain" → brain glyph; "concepts" → chips). The
-      "icting language" completion stays token-by-token (it already streams).
-- [ ] **Header anchor positions** — make sure every header nav link lands at the
-      perfect scroll position for its section on both mobile and desktop (account
-      for the sticky header height; use `scroll-margin-top` / `scroll-padding-top`
-      so titles aren't hidden under the bar). Verify each anchor on both layouts.
+- [x] **Arc caption spacing** — increased the gap between the caption and the
+      figure (static `.arc-beats` margin-top → .95rem; `.js-arc .arc-beats`
+      margin-top 0 → .85rem).
+- [x] **Arc start trigger** — the arc now begins only once its *bottom* edge is on
+      screen (IntersectionObserver checks `boundingClientRect.bottom <= rootBounds.bottom`,
+      with a fallback for viewports too short to fit the whole band).
+- [x] **Arc word-by-word reveal** — beats 2+ reveal one word at a time
+      (`.arc-word` spans split by the engine), with trigger words pulling in the
+      matching figure (`SEEN_TRIGGER`: "brain" → brain column, "why" → question
+      pivot, "concepts" → chips). Beat 2's prediction still streams token-by-token
+      after the words land. Verified in headless Chrome (no JS errors, full 1→5
+      progression, trigger sync confirmed).
+- [x] **Header anchor positions** — added `scroll-padding-top` on `html` (4.75rem
+      desktop, 6.75rem ≤560px) so anchor jumps clear the sticky header on both
+      layouts.
 - [ ] **Fix content** — review and correct the copy across all sections (About,
       News, Publications, Consulting, CV) for accuracy and tone.
 - [ ] **Improve fonts & feel** — refine the typography: display/body pairing,
@@ -36,6 +37,7 @@ Open work for the site, newest priorities first.
 - [ ] **Add animations / flair** — subtle motion and transitions to bring the
       page to life (e.g. on-scroll reveals, hover states). Must respect
       `prefers-reduced-motion: reduce` and degrade gracefully without JS.
-- [ ] **SEO** — meta tags (title, description), Open Graph / Twitter cards,
-      structured data (JSON-LD Person/ScholarlyArticle), sitemap.xml, robots.txt,
-      canonical URL, semantic headings.
+- [x] **SEO** — canonical URL, fuller Open Graph (url/site_name/locale/image) +
+      Twitter card, JSON-LD `Person` + `ScholarlyArticle`, `sitemap.xml`,
+      `robots.txt`. Headings already semantic. All URLs assume the user site
+      `https://abrajf.github.io/` (update if a custom domain / CNAME is added).

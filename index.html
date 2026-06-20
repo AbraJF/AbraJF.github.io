@@ -9,10 +9,78 @@
   <meta name="description" content="Abraham Jacob (Bram) Fresen — PhD researcher at the Language and Predictive Computation Group, Max Planck Institute for Psycholinguistics, Nijmegen. Part-time AI & Innovation consultant at ClickValue." />
   <meta name="author" content="Abraham Jacob Fresen" />
 
+  <link rel="canonical" href="https://abrajf.github.io/" />
+
   <!-- Open Graph (link previews on social media / messaging apps) -->
   <meta property="og:title" content="Bram Fresen — PhD Researcher, NeuroAI" />
   <meta property="og:description" content="PhD researcher in NeuroAI at Max Planck Institute for Psycholinguistics; part-time AI & Innovation consultant at ClickValue." />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://abrajf.github.io/" />
+  <meta property="og:site_name" content="Bram Fresen" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image" content="https://abrajf.github.io/assets/img/bram.jpg" />
+  <meta property="og:image:alt" content="Portrait of Bram Fresen" />
+
+  <!-- Twitter / X card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Bram Fresen — PhD Researcher, NeuroAI" />
+  <meta name="twitter:description" content="PhD researcher in NeuroAI at Max Planck Institute for Psycholinguistics; part-time AI & Innovation consultant at ClickValue." />
+  <meta name="twitter:image" content="https://abrajf.github.io/assets/img/bram.jpg" />
+  <meta name="twitter:creator" content="@AbraJF_io" />
+
+  <!-- Structured data: who this is + the published paper, for rich results. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Abraham Jacob Fresen",
+    "alternateName": "Bram Fresen",
+    "url": "https://abrajf.github.io/",
+    "image": "https://abrajf.github.io/assets/img/bram.jpg",
+    "email": "mailto:bram.fresen@mpi.nl",
+    "jobTitle": "PhD Researcher",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Max Planck Institute for Psycholinguistics",
+      "url": "https://www.mpi.nl/"
+    },
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "University of Amsterdam",
+      "url": "https://www.uva.nl/"
+    },
+    "knowsAbout": [
+      "NeuroAI",
+      "Predictive computation",
+      "Model–brain alignment",
+      "Mechanistic interpretability",
+      "Computational linguistics"
+    ],
+    "sameAs": [
+      "https://github.com/AbraJF",
+      "https://scholar.google.com/citations?user=SGLEgJEAAAAJ&hl=en",
+      "https://x.com/AbraJF_io",
+      "https://www.linkedin.com/in/bram-fresen-7b0a69151"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "headline": "Language models that accurately represent syntactic structure exhibit higher representational similarity to brain activity",
+    "author": [
+      {"@type": "Person", "name": "Abraham Jacob Fresen"},
+      {"@type": "Person", "name": "Rochelle Choenni"},
+      {"@type": "Person", "name": "Micha Heilbron"},
+      {"@type": "Person", "name": "Willem Zuidema"},
+      {"@type": "Person", "name": "Marianne de Heer Kloots"}
+    ],
+    "datePublished": "2024",
+    "isPartOf": "Proceedings of the 46th Annual Meeting of the Cognitive Science Society (CogSci)",
+    "url": "https://escholarship.org/content/qt1fp7m6nf/qt1fp7m6nf_noSplash_424c2fbd823c92f7fe1c3d0c9dec13a2.pdf"
+  }
+  </script>
 
   <link rel="stylesheet" href="assets/css/fonts.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
@@ -144,14 +212,18 @@
           </div>
 
           <!-- One narrative line per beat. Without the arc engine these stack as a
-               short intro paragraph; with it, the engine crossfades one at a time.
-               Beat 2 enacts next-word prediction: the line completes itself, the
-               predicted phrase filling in last. -->
+               short intro paragraph; with it, the engine crossfades one at a time
+               and (beat 2 onward) reveals each line word by word, syncing trigger
+               words to the figure (see SEEN_TRIGGER in the arc engine: "brain"
+               brings in the brain column, "why" the question pivot, "concepts" the
+               chips). Beat 2 enacts next-word prediction: the words land up to
+               "pred", then the model streams the completion token by token.
+               data-dwell is the hold after a line finishes revealing. -->
           <div class="arc-beats">
             <p class="arc-beat" data-beat="1"><strong>Language models.</strong></p>
-            <p class="arc-beat" data-beat="2" data-dwell="4600">They are remarkably good at pred<span class="arc-pred"><span class="arc-tok">ict</span><span class="arc-tok">ing</span><span class="arc-tok"> language</span><span class="arc-tok">.</span></span><span class="arc-caret" aria-hidden="true"></span></p>
-            <p class="arc-beat" data-beat="3" data-dwell="3800">And, surprisingly, they also predict how the <strong>human brain</strong> responds to it.</p>
-            <p class="arc-beat" data-beat="4" data-dwell="3800">Which raises the real question: <strong>why?</strong></p>
+            <p class="arc-beat" data-beat="2" data-dwell="2000">They are remarkably good at pred<span class="arc-pred"><span class="arc-tok">ict</span><span class="arc-tok">ing</span><span class="arc-tok"> language</span><span class="arc-tok">.</span></span><span class="arc-caret" aria-hidden="true"></span></p>
+            <p class="arc-beat" data-beat="3" data-wordstep="215" data-dwell="2800">And, surprisingly, they also predict how the <strong>human brain</strong> responds to it.</p>
+            <p class="arc-beat" data-beat="4" data-dwell="1600">But <strong>why?</strong></p>
             <p class="arc-beat" data-beat="5">To find out, I look at which <strong>concepts</strong> a model represents.</p>
           </div>
 
@@ -396,22 +468,79 @@
       if (reduce) return;   // leave static flow; figure + beats + bio all visible
 
       var n = beats.length;
-      var DWELL = 2800;     // ms a beat is held before the timer advances
-      var PAUSE = 1100;     // ms the caret "thinks" before a beat's prediction streams
-      var TOKEN_STEP = 200; // ms between generated tokens
-      var active = -1, timer = null, typeTimer = null, tokTimer = null,
+      var WORD_STEP = 150;    // ms between caption words appearing (beats 2+)
+      var PAUSE = 900;        // ms the caret "thinks" before beat 2's prediction streams
+      var TOKEN_STEP = 180;   // ms between generated tokens in the prediction
+      var DEFAULT_HOLD = 1500;// ms a beat is held after it finishes revealing
+      var active = -1, seqTimer = null, typeTimer = null, tokTimer = null,
           paused = false, finished = false;
 
       document.documentElement.classList.add('js-arc');
 
-      // One dot per beat: progress indicator + jump target.
+      // Figure-reveal staging per beat, keyed by data-beat. Each beat reveals one
+      // or more "seen tokens" that CSS keys off ([data-seen~="TOKEN"]):
+      //   now  — tokens shown immediately when the beat starts (no word to sync to),
+      //   word — map of normalised word → tokens shown as that word appears,
+      //   end  — tokens shown once the whole line has finished revealing,
+      //   endDelay — ms to wait after the line finishes before showing `end`
+      //          (so the end-of-line figure reads as its own moment),
+      //   all  — every token the beat eventually shows (used to rebuild the
+      //          cumulative state for beats already in the past).
+      // Beat 3 is staged in three: the brain icon arrives on "human" (the start of
+      // "human brain"), then — after a deliberate pause — the two RDMs + the
+      // "≈ similar" relation land together at the end of the line.
+      var BEATS_CFG = {
+        '1': { all: ['1'], now: ['1'] },
+        '2': { all: ['2'], now: ['2'] },
+        '3': { all: ['3', '3r'], word: { human: ['3'] }, end: ['3r'], endDelay: 550 },
+        '4': { all: ['4'], word: { why: ['4'] } },
+        '5': { all: ['5'], word: { concepts: ['5'] } }
+      };
+      function cfgOf(i) { return BEATS_CFG[beats[i].getAttribute('data-beat')] || {}; }
+      function norm(s) { return s.toLowerCase().replace(/[^a-z0-9]/g, ''); }
+
+      // Split each beat (2 onward) into per-word spans so they can be revealed one
+      // at a time, recursing into inline elements (strong/em) so words inside them
+      // split in place. A word listed in the beat's `word` map carries the tokens it
+      // should reveal (unit.seen). The prediction span (.arc-pred) is kept whole as a
+      // single unit — it streams token-by-token on its own; the caret is left
+      // untouched. beat 1 ("Language models.") simply fades in as a whole line.
+      function splitNode(node, units, wordMap) {
+        Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+          if (child.nodeType === 3) {
+            var frag = document.createDocumentFragment();
+            child.nodeValue.split(/(\s+)/).forEach(function (p) {
+              if (p === '') return;
+              if (/^\s+$/.test(p)) { frag.appendChild(document.createTextNode(p)); return; }
+              var span = document.createElement('span');
+              span.className = 'arc-word';
+              span.textContent = p;
+              units.push({ type: 'word', el: span, seen: wordMap[norm(p)] });
+              frag.appendChild(span);
+            });
+            node.replaceChild(frag, child);
+          } else if (child.nodeType === 1) {
+            if (child.classList.contains('arc-pred')) units.push({ type: 'pred', el: child });
+            else if (child.classList.contains('arc-caret')) { /* leave as-is */ }
+            else splitNode(child, units, wordMap);
+          }
+        });
+      }
+      var beatUnits = beats.map(function (beat, bi) {
+        var units = [];
+        if (bi > 0) splitNode(beat, units, (BEATS_CFG[beat.getAttribute('data-beat')] || {}).word || {});
+        return units;
+      });
+
+      // One dot per beat: progress indicator + jump target. Clicking jumps to that
+      // beat's finished state and stops autoplay.
       var dots = beats.map(function (b, i) {
         var d = document.createElement('button');
         d.type = 'button';
         d.className = 'arc-dot';
         d.setAttribute('role', 'tab');
         d.setAttribute('aria-label', 'Step ' + (i + 1) + ' of ' + n);
-        d.addEventListener('click', function () { stop(); setBeat(i); });
+        d.addEventListener('click', function () { stop(); setBeat(i); completeBeat(i); });
         if (dotsWrap) dotsWrap.appendChild(d);
         return d;
       });
@@ -425,75 +554,128 @@
         });
       });
 
+      function clearSeq() { clearTimeout(seqTimer); clearTimeout(typeTimer); clearTimeout(tokTimer); }
+
+      // Add seen tokens to the cumulative "seen" list (idempotent). The list drives
+      // which figure elements are revealed, via CSS [data-seen~="TOKEN"].
+      function addSeenTokens(arr) {
+        if (!arr || !arr.length) return;
+        var cur = (stage.getAttribute('data-seen') || '').split(/\s+/).filter(Boolean);
+        arr.forEach(function (t) { if (cur.indexOf(t) === -1) cur.push(t); });
+        stage.setAttribute('data-seen', cur.join(' '));
+      }
+
+      // Reset to the start of beat i: figure shows everything from earlier beats,
+      // the caption/prediction for beat i are hidden, ready to reveal. A beat with
+      // a trigger word defers its own figure reveal until that word appears; beats
+      // without one (1, 2) reveal their figure state immediately.
       function setBeat(i) {
-        if (i === active) return;
         active = i;
-        // Cumulative "seen" list drives which figure elements are revealed.
+        clearSeq();
         var seen = [];
-        for (var k = 0; k <= i; k++) seen.push(beats[k].getAttribute('data-beat'));
+        for (var k = 0; k < i; k++) seen = seen.concat(cfgOf(k).all || []);
         stage.setAttribute('data-seen', seen.join(' '));
         stage.setAttribute('data-beat', beats[i].getAttribute('data-beat'));
         beats.forEach(function (b, k) {
           b.classList.toggle('is-active', k === i);
-          if (k !== i) {                                  // reset the prediction phase
-            b.classList.remove('is-typed');
-            b.querySelectorAll('.arc-tok').forEach(function (t) { t.classList.remove('is-on'); });
-          }
+          b.classList.remove('is-typed', 'is-predicting');
+          b.querySelectorAll('.arc-tok').forEach(function (t) { t.classList.remove('is-on'); });
+          b.querySelectorAll('.arc-word').forEach(function (w) { w.classList.remove('is-on'); });
         });
         dots.forEach(function (d, k) {
           d.classList.toggle('is-active', k === i);
           d.setAttribute('aria-selected', k === i ? 'true' : 'false');
         });
-        // If this beat has a prediction, hold the caret (PAUSE) then stream its
-        // tokens one at a time; mark .is-typed once the last token lands.
-        clearTimeout(typeTimer); clearInterval(tokTimer);
+        addSeenTokens(cfgOf(i).now);   // immediate (un-synced) reveals for this beat
+      }
+
+      // Hold the caret (PAUSE) then stream the prediction's tokens one at a time;
+      // mark .is-typed once the last token lands, then call done(). Pause-aware.
+      function streamPrediction(i, done) {
         var pred = beats[i].querySelector('.arc-pred');
-        if (pred) {
-          var toks = Array.prototype.slice.call(pred.querySelectorAll('.arc-tok'));
-          typeTimer = window.setTimeout(function () {
-            if (!toks.length) { beats[i].classList.add('is-typed'); return; }
-            var k = 0;
-            tokTimer = window.setInterval(function () {
-              if (k >= toks.length) {
-                clearInterval(tokTimer);
-                beats[i].classList.add('is-typed');
-                return;
-              }
-              toks[k++].classList.add('is-on');
-            }, TOKEN_STEP);
-          }, PAUSE);
-        }
+        if (!pred) { done(); return; }
+        var toks = Array.prototype.slice.call(pred.querySelectorAll('.arc-tok'));
+        typeTimer = window.setTimeout(function start() {
+          if (paused) { typeTimer = window.setTimeout(start, 90); return; }
+          var k = 0;
+          (function streamOne() {
+            if (paused) { tokTimer = window.setTimeout(streamOne, 90); return; }
+            if (k >= toks.length) { beats[i].classList.add('is-typed'); done(); return; }
+            toks[k++].classList.add('is-on');
+            tokTimer = window.setTimeout(streamOne, TOKEN_STEP);
+          })();
+        }, PAUSE);
       }
 
-      // How long the current beat is held before advancing. Beats can override
-      // the default with data-dwell (e.g. beat 2 lingers after its prediction
-      // finishes streaming; beats 3–4 read a touch longer).
-      function dwellOf(i) {
+      // How long beat i is held after it finishes revealing, before advancing.
+      function holdOf(i) {
         var d = parseInt(beats[i].getAttribute('data-dwell'), 10);
-        return d > 0 ? d : DWELL;
+        return d > 0 ? d : DEFAULT_HOLD;
       }
-      function schedule() { clearTimeout(timer); timer = window.setTimeout(tick, dwellOf(active)); }
+      // Per-word reveal gap for beat i (a beat can slow its own pacing via
+      // data-wordstep — e.g. beat 3, which is deliberately staged and unhurried).
+      function stepOf(i) {
+        var s = parseInt(beats[i].getAttribute('data-wordstep'), 10);
+        return s > 0 ? s : WORD_STEP;
+      }
 
-      // Timer-driven advance through the remaining beats.
-      function tick() {
-        if (paused) return;
-        if (active >= n - 1) { finished = true; return; }
-        setBeat(active + 1);
-        schedule();
+      // Reveal beat i word by word; a trigger word pulls in the matching figure.
+      // The prediction unit streams its tokens; then the beat is held and we
+      // advance. Every step polls `paused` so hover/focus freezes mid-reveal and
+      // resumes cleanly. beat 1 has no units and just holds, then advances.
+      function playBeat(i) {
+        var units = beatUnits[i], idx = 0;
+        (function step() {
+          if (paused) { seqTimer = window.setTimeout(step, 90); return; }
+          if (idx < units.length) {
+            var u = units[idx++];
+            if (u.type === 'word') {
+              u.el.classList.add('is-on');
+              addSeenTokens(u.seen);   // a synced word pulls in its figure element(s)
+              seqTimer = window.setTimeout(step, stepOf(i));
+            } else {
+              beats[i].classList.add('is-predicting');
+              streamPrediction(i, function () { seqTimer = window.setTimeout(step, 120); });
+            }
+            return;
+          }
+          // Line fully revealed. After an optional beat (endDelay) — so the
+          // end-of-line figure reads as a separate moment, not simultaneous with
+          // the last word's reveal — show it (beat 3's RDMs + ≈), then hold to let
+          // it linger before advancing.
+          seqTimer = window.setTimeout(function endStage() {
+            if (paused) { seqTimer = window.setTimeout(endStage, 90); return; }
+            addSeenTokens(cfgOf(i).end);
+            seqTimer = window.setTimeout(function adv() {
+              if (paused) { seqTimer = window.setTimeout(adv, 90); return; }
+              if (active >= n - 1) { finished = true; return; }
+              play(active + 1);
+            }, holdOf(i));
+          }, cfgOf(i).endDelay || 0);
+        })();
       }
-      function play(from) {
-        finished = false;
-        setBeat(typeof from === 'number' ? from : 0);
-        schedule();
-      }
-      function stop() { clearTimeout(timer); timer = null; finished = true; }
 
-      // Pause while the visitor is reading (hover / keyboard focus within).
+      // Reveal beat i fully and instantly (dot jumps): all words on, prediction
+      // streamed in full, figure for that beat shown, caret off.
+      function completeBeat(i) {
+        beatUnits[i].forEach(function (u) {
+          if (u.type === 'word') u.el.classList.add('is-on');
+          else {
+            beats[i].classList.add('is-predicting');
+            u.el.querySelectorAll('.arc-tok').forEach(function (t) { t.classList.add('is-on'); });
+          }
+        });
+        beats[i].classList.add('is-typed');
+        addSeenTokens(cfgOf(i).all);
+      }
+
+      function play(from) { finished = false; setBeat(from); playBeat(from); }
+      function stop() { clearSeq(); finished = true; }
+
+      // Pause while the visitor is reading (hover / keyboard focus within). The
+      // reveal loops poll `paused`, so they resume on their own when it clears.
       arc.addEventListener('mouseenter', function () { paused = true; });
-      arc.addEventListener('mouseleave', function () {
-        paused = false;
-        if (!finished && timer === null) schedule();
-      });
+      arc.addEventListener('mouseleave', function () { paused = false; });
       arc.addEventListener('focusin', function () { paused = true; });
       arc.addEventListener('focusout', function () { paused = false; });
 
@@ -504,9 +686,22 @@
       var started = false;
       function begin() { if (started) return; started = true; play(0); }
       if ('IntersectionObserver' in window) {
+        // Hold off until the whole band is on-screen: fire only once its bottom
+        // edge has scrolled above the viewport bottom (or it fully covers the
+        // viewport, for short screens). Multiple thresholds keep the callback
+        // firing as the band scrolls up so we catch that moment.
         var io = new IntersectionObserver(function (es) {
-          es.forEach(function (e) { if (e.isIntersecting) { begin(); io.disconnect(); } });
-        }, { threshold: 0.4 });
+          es.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            var rb = e.rootBounds || { top: 0, bottom: window.innerHeight };
+            var r = e.boundingClientRect;
+            // Whole band on-screen (bottom edge above the viewport bottom), or —
+            // on a viewport too short to fit it — the band fully covering it.
+            if (r.bottom <= rb.bottom || (r.top <= rb.top && r.bottom >= rb.bottom)) {
+              begin(); io.disconnect();
+            }
+          });
+        }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
         io.observe(arc);
       } else {
         begin();

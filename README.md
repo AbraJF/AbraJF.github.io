@@ -80,6 +80,15 @@ All motion is progressive enhancement (see the
   (`docs/research-arc-animation-plan.md`).
 - All of it is disabled under `prefers-reduced-motion: reduce`.
 
+## SEO
+
+The `<head>` carries a canonical URL, Open Graph + Twitter card tags, and JSON-LD
+structured data (`Person` + the published `ScholarlyArticle`); `robots.txt` and
+`sitemap.xml` sit at the repo root. All absolute URLs assume the user site
+`https://abrajf.github.io/` — if you add a custom domain (a `CNAME`), update the
+`<head>` URLs, `robots.txt`, and `sitemap.xml` together. In-page anchor jumps clear
+the sticky header via `scroll-padding-top`.
+
 ## CV (generated PDF)
 
 The CV PDF is built from a single source of truth, `data/cv.json`:

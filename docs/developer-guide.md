@@ -15,7 +15,9 @@ Technical reference for maintaining and extending the site.
 
 ```
 phd-website/
-├── index.html              # All page content and structure
+├── index.html              # All page content and structure (incl. SEO <head>)
+├── robots.txt              # Crawler directives + sitemap pointer
+├── sitemap.xml             # Single-URL sitemap (the home page)
 ├── .nojekyll               # Tells GitHub Pages: serve files as-is, no Jekyll
 ├── assets/
 │   ├── css/style.css        # All styling; design tokens in :root
@@ -56,6 +58,14 @@ phd-website/
   refactoring so the user guide stays accurate.
 - The portrait `<img>` has an inline `onerror` handler that hides it when the file is
   missing — so the page never shows a broken image icon.
+- **SEO / `<head>`** — `<title>` + `meta description`, a `link rel="canonical"`, Open
+  Graph (`og:title/description/type/url/site_name/locale/image`) and a Twitter
+  `summary` card, plus two JSON-LD blocks (`Person` and the published
+  `ScholarlyArticle`). All absolute URLs hardcode the user site
+  `https://abrajf.github.io/`; if a custom domain is added (a `CNAME` file), update
+  these, `robots.txt`, and `sitemap.xml` together. `scroll-padding-top` on `html`
+  offsets in-page anchor jumps so section titles clear the sticky header (a larger
+  value below 560px, where the nav is taller).
 
 ## CSS conventions
 
@@ -110,6 +120,10 @@ the bottom of `index.html`; styles in the "Motion & flair" block of `style.css`.
   scissors, WAAPI) is parked in git commit `6c9a5ca` to be ported back in at the syntax beat.
 
   Structure (inside `.arc-stage`, which is `aria-hidden`):
+  - `.arc-stage` is bottom-aligned (`justify-content:flex-end`) and **reserved at the tallest
+    figure's height** (a fixed `min-height`, 208px desktop / 170px mobile — the measured beat-5
+    max). So the figure grows *upward* into the spare space as icons/RDMs/chips appear, its
+    bottom edge stays put, and the caption below never jumps between beats.
   - `.arc-figure` > `.arc-row` — the glyph row: `.arc-col-lm` and `.arc-col-brain`
     (each a `currentColor` inline-SVG `.arc-glyph` + `.arc-glyph-label` + an RDM
     `.arc-pattern`), with `.arc-rel` (the `≈`/`similar`, and a `?`) centred between them.
@@ -120,20 +134,32 @@ the bottom of `index.html`; styles in the "Motion & flair" block of `style.css`.
   - `.arc-concepts` — the concept chips (`.arc-concept`, Semantics/Syntax/Pragmatics) that
     fan in at the concepts beat; `.arc-magnifier` is the badge on the LM glyph.
   - `.arc-beats` — one `<p class="arc-beat" data-beat="N">` per beat; JS crossfades one at a
-    time (`.is-active`). Beat 2's prediction streams token-by-token: `.arc-tok` spans inside
-    `.arc-pred`, with a blinking `.arc-caret`.
+    time (`.is-active`). Beats 2+ reveal **word by word**: `splitNode()` wraps each word in an
+    `.arc-word` span (recursing into `<strong>`/`<em>`), held at `opacity:0` until `.is-on`.
+    Beat 2's prediction then streams token-by-token: `.arc-tok` spans inside `.arc-pred`, with
+    a `.arc-caret` that blinks only during the prediction phase (`.is-predicting`).
   - `.arc-controls` — a progress **dot** per beat (jump target) + a **Replay** button.
 
   The engine maps a beat index to two attributes on `.arc-stage`: cumulative
   `data-seen="1 2 …"` (CSS reveals figure parts and stays) and `data-beat="N"` (the current
-  beat, for one-shot flourishes). It advances on a timer; each beat's hold is `DWELL` unless it
-  overrides with `data-dwell` (beat 2 lingers after its tokens stream; beats 3–4 read longer).
-  `PAUSE` is the caret "think" before streaming; `TOKEN_STEP` is the per-token gap. Hover /
-  keyboard-focus pauses the timer; a dot click stops autoplay and jumps; Replay restarts.
-  Reveal animations are CSS, keyed off `data-seen`/`data-beat`; per-cell stagger delays are set
-  inline by the engine. Without JS — or under reduced motion — `.js-arc` is never added: the
-  band shows its static figure, the beats read as a short intro paragraph, controls stay hidden,
-  and `.about-bio` carries the meaning.
+  beat, for one-shot flourishes). `setBeat(i)` resets to the start of a beat (figure shows
+  earlier beats; this beat's words hidden); `playBeat(i)` reveals it word by word and then
+  advances; `completeBeat(i)` (dot jumps) shows it in full at once. A beat's figure reveal is
+  **staged via `BEATS_CFG`** (keyed by `data-beat`): `now` tokens show at beat start, `word`
+  tokens show as a synced word appears, `end` tokens show once the line finishes, and `all` is
+  the full set used to rebuild past beats' state. So "why" → question pivot and "concepts" →
+  chips fire mid-line, while **beat 3 is staged in three**: the brain column joins on "human
+  brain" (`3`), then the two RDMs + the "≈ similar" relation land together at end-of-line (`3r`)
+  and linger. `WORD_STEP` is the per-word gap, `PAUSE` the caret "think"
+  before streaming, `TOKEN_STEP` the per-token gap, and `data-dwell` (else `DEFAULT_HOLD`) the
+  hold *after* a line finishes revealing. Every reveal loop polls a `paused` flag, so hover /
+  keyboard-focus freezes mid-reveal and resumes cleanly; a dot click stops autoplay and jumps;
+  Replay restarts. The band autoplays once its **bottom edge** scrolls on screen (the
+  IntersectionObserver checks `boundingClientRect.bottom` against `rootBounds`). Reveal
+  animations are CSS, keyed off `data-seen`/`data-beat`; per-cell stagger delays are set inline
+  by the engine. Without JS — or under reduced motion — `.js-arc` is never added: the band shows
+  its static figure, the beats read as a short intro paragraph, controls stay hidden, and
+  `.about-bio` carries the meaning.
 
 1. Add a `<section id="newid" class="section">…</section>` in `index.html`.
 2. Add `<li><a href="#newid">Label</a></li>` to the nav.
