@@ -6,8 +6,9 @@ part-time AI & Innovation consultant/engineer. Plain HTML + CSS, deployed on
 
 The look is an **editorial-sage** theme: serif display headings (Newsreader) over a
 sans-serif body/UI (Inter), a green/amber/orange/brown palette, diamond section dividers.
-Light by default, with a dark variant that activates automatically via
-`prefers-color-scheme`. Fonts are **self-hosted** (no external request) and subtle motion
+Light by default, with a dark variant that follows `prefers-color-scheme` and a
+**theme toggle** in the nav (moon/sun) that lets visitors override the system choice;
+the preference persists in `localStorage`. Fonts are **self-hosted** (no external request) and subtle motion
 (scroll reveals, hover states, an animated research arc in the bio) degrades
 gracefully without JS and respects `prefers-reduced-motion`.
 
@@ -87,7 +88,10 @@ structured data (`Person` + the published `ScholarlyArticle`); `robots.txt` and
 `sitemap.xml` sit at the repo root. All absolute URLs assume the user site
 `https://abrajf.github.io/` — if you add a custom domain (a `CNAME`), update the
 `<head>` URLs, `robots.txt`, and `sitemap.xml` together. In-page anchor jumps clear
-the sticky header via `scroll-padding-top`.
+the sticky header via `scroll-padding-top`. The `Person` schema's `sameAs` lists the
+researcher's profiles (ORCID, Scholar, GitHub, LinkedIn, X) so search engines can tie
+the page to a known identity. The `google*.html` files at the repo root are Google
+Search Console ownership tokens (one per verified account) — leave them in place.
 
 ## CV (generated PDF)
 

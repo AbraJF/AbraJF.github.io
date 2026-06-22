@@ -75,13 +75,25 @@ phd-website/
   system fallback (`--serif` / `--sans`). Live pairing: Newsreader + Inter.
 - All design tokens (palette, max width, surfaces, on-accent text, shadows, fonts) are
   CSS custom properties under `:root` in `style.css`. Change the theme in one place.
-- Dark mode via `@media (prefers-color-scheme: dark)` — overrides **only** the `:root`
-  tokens; every rule below references variables, so no rule is duplicated per mode.
+- Dark mode is variable-only — the dark block overrides **only** the colour tokens, and
+  every rule below references variables, so no rule is duplicated per mode. The dark
+  palette is applied two ways from one var list: `html[data-theme="dark"]` (the resolved
+  choice) and, as a no-JS fallback, `@media (prefers-color-scheme: dark) html:not([data-theme])`.
+- **Theme toggle.** A borderless `.theme-toggle` button in `.nav-right` flips light/dark
+  (moon icon in light, sun in dark, swapped by CSS on `[data-theme]`). An inline `<head>`
+  script resolves the starting theme **before first paint** (saved `localStorage.theme`
+  → else `prefers-color-scheme`) and sets `html[data-theme]`, so there is no flash; it also
+  syncs the single `#theme-color` meta. The body-end script reveals the button (it ships
+  `hidden`, since it is useless without JS to persist), wires the click to flip
+  `data-theme` + persist to `localStorage`, and keeps `aria-pressed` / `aria-label` in sync.
 - End-of-section dividers are a pseudo-element diamond (`◆`) on a fading hairline
   (`.section:not(:last-of-type)::before/::after`); the last section omits it.
 - Mobile-first. Two breakpoints: `@media (max-width: 480px)` for hero/news stacking,
   and `@media (max-width: 560px)` which turns the nav into a horizontally scrollable
-  row (styled scrollbar + CSS scroll-shadow edge fade for iOS).
+  row (styled scrollbar + CSS scroll-shadow edge fade for iOS). The links live in
+  `.nav-right` alongside the theme toggle; on mobile `.nav-right` is width-constrained
+  (`width:100%;min-width:0`) so the overflow lands on `.nav-links` (the scroll container)
+  and the toggle stays pinned at the row's end rather than pushing the row past the viewport.
 - BEM-ish flat class names (`.pub`, `.pub-title`, `.nav-links`). No nesting tools.
 
 ## Typography (self-hosted fonts)

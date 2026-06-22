@@ -19,8 +19,9 @@
        img-src 'self' policy above; a data: URI would be blocked. theme-color
        tints the mobile browser chrome to the site's green. -->
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
-  <meta name="theme-color" content="#1f4a2c" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#15291c" media="(prefers-color-scheme: dark)" />
+  <!-- Single theme-color (browser-chrome tint); the theme scripts keep it in
+       sync with the active palette. No-JS keeps the light tint. -->
+  <meta name="theme-color" id="theme-color" content="#1f4a2c" />
 
   <title>Bram Fresen — PhD Researcher, NeuroAI</title>
 
@@ -75,6 +76,7 @@
       "Computational linguistics"
     ],
     "sameAs": [
+      "https://orcid.org/0000-0002-5218-592X",
       "https://github.com/AbraJF",
       "https://scholar.google.com/citations?user=SGLEgJEAAAAJ&hl=en",
       "https://x.com/AbraJF_io",
@@ -100,6 +102,23 @@
   }
   </script>
 
+  <!-- Resolve the colour theme before first paint to avoid a flash: a saved
+       choice in localStorage wins, else fall back to the OS preference. The
+       stylesheet keys its dark palette off html[data-theme="dark"]; if this
+       script can't run, a prefers-color-scheme fallback covers it. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        var dark = saved ? saved === 'dark'
+          : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        var chrome = document.getElementById('theme-color');
+        if (chrome) chrome.setAttribute('content', dark ? '#15291c' : '#1f4a2c');
+      } catch (e) { /* storage blocked — leave the media-query fallback in charge */ }
+    })();
+  </script>
+
   <link rel="stylesheet" href="assets/css/fonts.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
@@ -107,13 +126,22 @@
   <header class="site-header">
     <nav class="nav" aria-label="Primary">
       <a class="nav-brand" href="#top">Bram Fresen</a>
-      <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#news">News</a></li>
-        <li><a href="#publications">Publications</a></li>
-        <li><a href="#consulting">Consulting</a></li>
-        <li><a href="#cv">CV</a></li>
-      </ul>
+      <div class="nav-right">
+        <ul class="nav-links">
+          <li><a href="#about">About</a></li>
+          <li><a href="#news">News</a></li>
+          <li><a href="#publications">Publications</a></li>
+          <li><a href="#consulting">Consulting</a></li>
+          <li><a href="#cv">CV</a></li>
+        </ul>
+        <!-- Theme toggle. Hidden until JS upgrades it (no point without a script
+             to persist the choice); the inline head script has already resolved
+             the starting theme. CSS swaps the moon/sun icon by the active theme. -->
+        <button class="theme-toggle" type="button" hidden aria-label="Switch to dark theme" aria-pressed="false" title="Toggle light / dark theme">
+          <svg class="theme-icon icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="theme-icon icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.6M12 19.4V22M4.5 4.5l1.8 1.8M17.7 17.7l1.8 1.8M2 12h2.6M19.4 12H22M4.5 19.5l1.8-1.8M17.7 6.3l1.8-1.8"/></svg>
+        </button>
+      </div>
     </nav>
   </header>
 
@@ -476,6 +504,37 @@
   <script>
     // Auto-update the footer year. Pure progressive enhancement; site works without JS.
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ---- Theme toggle (progressive enhancement) --------------------------
+    // The inline <head> script already set html[data-theme]. Here we reveal the
+    // button, keep its label/state in sync, and persist clicks to localStorage.
+    (function () {
+      var btn = document.querySelector('.theme-toggle');
+      if (!btn) return;
+      var root = document.documentElement;
+      var chrome = document.getElementById('theme-color');
+
+      function current() {
+        if (root.dataset.theme) return root.dataset.theme;
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      function sync(mode) {
+        var dark = mode === 'dark';
+        btn.setAttribute('aria-pressed', String(dark));
+        btn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+        // Match the browser chrome tint to the active page background.
+        if (chrome) chrome.setAttribute('content', dark ? '#15291c' : '#1f4a2c');
+      }
+
+      btn.hidden = false;
+      sync(current());
+      btn.addEventListener('click', function () {
+        var next = current() === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        try { localStorage.setItem('theme', next); } catch (e) { /* storage blocked: choice lasts this session only */ }
+        sync(next);
+      });
+    })();
 
     // ---- On-scroll reveal (progressive enhancement) ----------------------
     // Bails out — leaving all content visible — when the browser lacks

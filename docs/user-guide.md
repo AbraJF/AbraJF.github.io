@@ -119,8 +119,20 @@ don't use.
 
 Want different colours? Open `assets/css/style.css` and change the values at the very
 top under `:root`. The site uses an editorial-sage palette (green / amber / orange /
-brown). Dark mode is automatic and follows the visitor's system setting — adjust the
-`@media (prefers-color-scheme: dark)` block just below `:root` to tune the dark variant.
+brown). Visitors get a **theme toggle** (the moon/sun button in the nav) and the site
+also follows their system setting by default; their choice is remembered. To tune the
+dark colours, edit the `html[data-theme="dark"]` block just below `:root` (the
+`@media (prefers-color-scheme: dark)` block mirrors it for visitors who never click the
+toggle — keep the two in sync).
+
+## Getting found on Google (SEO)
+
+The site ships search-ready: a sitemap, structured data, and your profile links. To get
+Google to index it, verify the site in [Google Search Console](https://search.google.com/search-console)
+(URL-prefix property `https://abrajf.github.io/`), submit `sitemap.xml`, and request
+indexing. The `google*.html` files at the repo root are ownership tokens — **don't delete
+them**. The single biggest ranking lever for your name is **backlinks**: link the site
+from your ORCID, Google Scholar, LinkedIn, GitHub profile, and your institute staff page.
 
 ## Preview before publishing
 
