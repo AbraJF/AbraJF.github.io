@@ -35,9 +35,11 @@ If the file is missing the page simply hides the image — nothing breaks.
   - The narrative lines live in `<div class="arc-beats">` as one `<p class="arc-beat">` per
     beat — edit them like normal text. When animations are off they read as a short intro
     paragraph.
-  - The **real bio** is the always-present `<p class="about-bio">` right below the band — this
-    is what no-JS visitors, reduced-motion users and search engines read. Keep it complete and
-    up to date; the animation is decoration on top of it.
+  - The **real bio** is the always-present set of `<p class="about-bio">` paragraphs right below
+    the band — this is what no-JS visitors, reduced-motion users and search engines read. Keep it
+    complete and up to date; the animation is decoration on top of it. The first paragraph
+    (`.bio-lead`) is the larger opening line — keep it to one or two sentences so it reads as a
+    lead; put detail in the paragraphs beneath it.
   - The figure (glyphs, pattern grids, concept chips) is built from plain markup — to tweak it,
     see the developer guide. The build is phased (`docs/research-arc-animation-plan.md`).
 - The **consulting paragraph** comes after the bio in the About section — edit it like any text.

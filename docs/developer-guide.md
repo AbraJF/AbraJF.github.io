@@ -113,9 +113,12 @@ the bottom of `index.html`; styles in the "Motion & flair" block of `style.css`.
 - **Animated research arc** (the `.research-arc` IIFE) — a self-playing, multi-beat
   narrative of the PhD's through-line. It sits in **normal page flow** (no scroll
   hijack): the engine adds `.js-arc` to `<html>`, plays the sequence once when the band
-  scrolls into view, and exposes playback controls. The real bio is a separate, always-in-DOM
-  `<p class="about-bio">` below the band (not the captions), so no-JS / reduced-motion /
-  crawlers always get the full text. Full spec + beat script: `docs/research-arc-animation-plan.md`.
+  scrolls into view, and exposes playback controls. The real bio is separate, always-in-DOM
+  `.about-bio` paragraphs below the band (not the captions), so no-JS / reduced-motion /
+  crawlers always get the full text. The first carries `id="bio"` (skip / handoff target) and
+  the `.bio-lead` class — a journal-style standfirst set larger in the display serif
+  (`--font-display`); the rest are short body paragraphs with restrained emphasis.
+  Full spec + beat script: `docs/research-arc-animation-plan.md`.
   All **10 beats** are live. The legacy four-beat dep-parse engine (arcs, ROOT, WAAPI) from git
   commit `6c9a5ca` was **ported back in** as beat 7 and rebuilt onto the beat timeline
   (`buildSyntax`, below); beats 8–10 add the open question, causal erasure, and the resolve.
